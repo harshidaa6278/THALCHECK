@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="theme-color" content="#123B41">
+<title>ThalCheck — Thalassemia / IDA Screening</title>
+<style>
+  :root{
+    --ink:#122024;
+    --navy:#123B41;
+    --navy-deep:#0B2529;
+    --teal:#2E7D74;
+    --teal-soft:#DCEFEC;
+    --paper:#F6F8F7;
+    --card:#FFFFFF;
+    --line:#DDE5E3;
+    --muted:#5B6E6C;
+    --amber:#B5750E;
+    --amber-soft:#FBF0DD;
+    --red:#B23A3A;
+    --red-soft:#FBE7E5;
+    --green:#2E7D4F;
+    --green-soft:#E4F3E8;
+    --radius:14px;
+    --serif: "Source Serif 4","Georgia",serif;
+    --sans: "Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--sans);
+    background:
+      radial-gradient(1200px 400px at 100% -10%, #E4F0EE 0%, transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{
+    max-width:640px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+  }
+  header.app-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .brand{
+    font-family:var(--serif);
+    font-size:26px;
+    font-weight:600;
+    color:var(--navy-deep);
+    letter-spacing:-0.01em;
+  }
+  .brand small{
+    display:block;
+    font-family:var(--sans);
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--muted);
+    margin-top:2px;
+    letter-spacing:0.01em;
+  }
+  .dept-tag{
+    font-size:11.5px;
+    color:var(--teal);
+    background:var(--teal-soft);
+    padding:4px 10px;
+    border-radius:20px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+
+  /* Stepper */
+  .stepper{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:26px;
+  }
+  .step-track{
+    flex:1;
+    height:3px;
+    background:var(--line);
+    border-radius:3px;
+    position:relative;
+    overflow:hidden;
+  }
+  .step-track i{
+    display:block;
+    height:100%;
+    width:33.33%;
+    background:var(--teal);
+    border-radius:3px;
+    transition:width .35s ease;
+  }
+  .step-label{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .step-label.current{ color:var(--navy-deep); }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 26px;
+    box-shadow:0 1px 2px rgba(18,32,36,0.04);
+  }
+  .screen{ display:none; }
+  .screen.active{ display:block; animation:rise .28s ease; }
+  @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  h1.screen-title{
+    font-family:var(--serif);
+    font-size:21px;
+    font-weight:600;
+    margin:0 0 4px;
+    color:var(--navy-deep);
+  }
+  p.screen-sub{
+    margin:0 0 22px;
+    font-size:14px;
+    color:var(--muted);
+    line-height:1.5;
+  }
+
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+  .field .hint{
+    font-size:11.5px;
+    color:var(--muted);
+    font-weight:400;
+    margin-left:6px;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:11px 12px;
+    font-size:15px;
+    font-family:var(--sans);
+    border:1.4px solid var(--line);
+    border-radius:9px;
+    background:#FCFDFD;
+    color:var(--ink);
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input:focus, .field select:focus{
+    outline:none;
+    border-color:var(--teal);
+    box-shadow:0 0 0 3px rgba(46,125,116,0.15);
+  }
+  .field input:invalid:not(:placeholder-shown){
+    border-color:var(--red);
+  }
+  .row2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .err-msg{
+    font-size:12px;
+    color:var(--red);
+    margin-top:5px;
+    display:none;
+  }
+  .field.invalid .err-msg{ display:block; }
+  .field.invalid input{ border-color:var(--red); }
+
+  .actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:24px;
+    gap:12px;
+  }
+  button{
+    font-family:var(--sans);
+    font-size:14.5px;
+    font-weight:600;
+    border-radius:9px;
+    padding:12px 20px;
+    border:none;
+    cursor:pointer;
+    transition:transform .1s ease, background .15s ease;
+  }
+  button:active{ transform:scale(0.98); }
+  .btn-primary{
+    background:var(--navy-deep);
+    color:#fff;
+    flex:1;
+  }
+  .btn-primary:hover{ background:var(--navy); }
+  .btn-ghost{
+    background:transparent;
+    color:var(--muted);
+    padding:12px 14px;
+  }
+  .btn-ghost:hover{ color:var(--navy); }
+  .btn-primary:disabled{
+    background:#A9B7B5;
+    cursor:not-allowed;
+  }
+
+  /* Results screen */
+  .verdict{
+    border-radius:var(--radius);
+    padding:22px 24px;
+    margin-bottom:22px;
+    border:1.4px solid;
+  }
+  .verdict.thal{ background:var(--amber-soft); border-color:#EBD3A0; }
+  .verdict.ida{ background:var(--red-soft); border-color:#EDC5C1; }
+  .verdict.normal{ background:var(--green-soft); border-color:#BFE1CB; }
+  .verdict.mixed{ background:#EEF1F5; border-color:#D6DCE3; }
+  .verdict .tag{
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    margin-bottom:6px;
+    display:block;
+  }
+  .verdict.thal .tag{ color:var(--amber); }
+  .verdict.ida .tag{ color:var(--red); }
+  .verdict.normal .tag{ color:var(--green); }
+  .verdict.mixed .tag{ color:var(--muted); }
+  .verdict h2{
+    font-family:var(--serif);
+    font-size:20px;
+    margin:0 0 6px;
+    color:var(--navy-deep);
+  }
+  .verdict p{
+    margin:0;
+    font-size:13.5px;
+    color:var(--ink);
+    line-height:1.55;
+  }
+  .verdict .score{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:10px;
+  }
+
+  .patient-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 16px;
+    font-size:12.5px;
+    color:var(--muted);
+    margin-bottom:20px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+  }
+  .patient-strip b{ color:var(--navy-deep); font-weight:600; }
+
+  .idx-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .idx-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:13px 16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#FCFDFD;
+  }
+  .idx-name{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--navy-deep);
+  }
+  .idx-formula{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .idx-right{
+    text-align:right;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .idx-value{
+    font-size:15px;
+    font-weight:700;
+    color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .pill{
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .pill.thal{ background:var(--amber-soft); color:var(--amber); }
+  .pill.ida{ background:var(--red-soft); color:var(--red); }
+
+  .disclaimer{
+    font-size:12px;
+    line-height:1.6;
+    color:var(--muted);
+    background:#F1F4F3;
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:22px;
+  }
+  .disclaimer b{ color:var(--navy-deep); }
+
+  .result-actions{
+    display:flex;
+    gap:10px;
+  }
+  .btn-secondary{
+    background:var(--teal-soft);
+    color:var(--teal);
+    flex:1;
+  }
+  .btn-secondary:hover{ background:#CDE7E3; }
+
+  footer.credit{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:28px;
+  }
+
+  @media print{
+    .stepper, .actions, .result-actions, header .dept-tag{ display:none !important; }
+    body{ background:#fff; }
+    .card{ box-shadow:none; border:none; }
+  }
+
+  @media (max-width:420px){
+    .row2{ grid-template-columns:1fr; }
+    .card{ padding:22px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="app-head">
+    <div class="brand">ThalCheck<small>MLT Dept · Screening Prototype</small></div>
+    <div class="dept-tag">Decision-support only</div>
+  </header>
+
+  <div class="stepper">
+    <span class="step-label current" id="stepLabel">Step 1 of 3</span>
+    <div class="step-track"><i id="stepFill" style="width:33.33%"></i></div>
+  </div>
+
+  <div class="card">
+
+    <!-- SCREEN 1: Patient details -->
+    <section class="screen active" id="screen1">
+      <h1 class="screen-title">Patient details</h1>
+      <p class="screen-sub">Enter the basic details for this screening record.</p>
+
+      <div class="field" id="f-name">
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="e.g. Kavya R" autocomplete="name">
+        <div class="err-msg">Enter the patient's name.</div>
+      </div>
+
+      <div class="row2">
+        <div class="field" id="f-age">
+          <label for="age">Age <span class="hint">years</span></label>
+          <input type="number" id="age" min="0" max="120" placeholder="e.g. 24">
+          <div class="err-msg">Enter a valid age (0–120).</div>
+        </div>
+        <div class="field" id="f-sex">
+          <label for="sex">Sex</label>
+          <select id="sex">
+            <option value="" disabled selected>Select</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+          </select>
+          <div class="err-msg">Select a value.</div>
+        </div>
+      </div>
+
+      <div class="field" id="f-email">
+        <label for="email">Email ID</label>
+        <input type="email" id="email" placeholder="name@example.com" autocomplete="email">
+        <div class="err-msg">Enter a valid email address.</div>
+      </div>
+
+      <div class="field" id="f-place">
+        <label for="place">Place</label>
+        <input type="text" id="place" placeholder="e.g. Chennai" autocomplete="address-level2">
+        <div class="err-msg">Enter a place.</div>
+      </div>
+
+      <div class="actions">
+        <span></span>
+        <button class="btn-primary" onclick="goToScreen2()">Continue to CBC values</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: CBC input -->
+    <section class="screen" id="screen2">
+      <h1 class="screen-title">CBC parameters</h1>
+      <p class="screen-sub">Enter the complete blood count values exactly as reported by the analyzer.</p>
+
+      <div class="row2">
+        <div class="field" id="f-hb">
+          <label for="hb">Hemoglobin (Hb) <span class="hint">g/dL</span></label>
+          <input type="number" step="0.1" id="hb" placeholder="e.g. 10.2">
+          <div class="err-msg">Enter Hb between 3–20 g/dL.</div>
+        </div>
+        <div class="field" id="f-rbc">
+          <label for="rbc">RBC count <span class="hint">million/µL</span></label>
+          <input type="number" step="0.01" id="rbc" placeholder="e.g. 5.4">
+          <div class="err-msg">Enter RBC between 1–8 million/µL.</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field" id="f-mcv">
+          <label for="mcv">MCV <span class="hint">fL</span></label>
+          <input type="number" step="0.1" id="mcv" placeholder="e.g. 62.5">
+          <div class="err-msg">Enter MCV between 40–130 fL.</div>
+        </div>
+        <div class="field" id="f-mch">
+          <label for="mch">MCH <span class="hint">pg</span></label>
+          <input type="number" step="0.1" id="mch" placeholder="e.g. 19.8">
+          <div class="err-msg">Enter MCH between 10–45 pg.</div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field" id="f-mchc">
+          <label for="mchc">MCHC <span class="hint">g/dL</span></label>
+          <input type="number" step="0.1" id="mchc" placeholder="e.g. 31.0">
+          <div class="err-msg">Enter MCHC between 20–40 g/dL.</div>
+        </div>
+        <div class="field" id="f-rdw">
+          <label for="rdw">RDW-CV <span class="hint">%</span></label>
+          <input type="number" step="0.1" id="rdw" placeholder="e.g. 15.4">
+          <div class="err-msg">Enter RDW between 9–30%.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-ghost" onclick="goToScreen1()">Back</button>
+        <button class="btn-primary" onclick="calculateAndShowResult()">Calculate result</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: Results -->
+    <section class="screen" id="screen3">
+      <div class="patient-strip" id="patientStrip"></div>
+
+      <div id="verdictBox" class="verdict mixed">
+        <span class="tag" id="verdictTag">SCREENING RESULT</span>
+        <h2 id="verdictTitle">—</h2>
+        <p id="verdictBody">—</p>
+        <div class="score" id="verdictScore"></div>
+      </div>
+
+      <div class="idx-list" id="idxList"></div>
+
+      <div class="disclaimer">
+        <b>Not a diagnosis.</b> These are published discriminant-index calculations
+        (Mentzer, Shine &amp; Lal, Srivastava, Green &amp; King, Ehsani, Sirdah) intended for
+        rapid point-of-care screening only. No single index is 100% sensitive or specific.
+        Confirm any thalassemia-leaning result with hemoglobin HPLC / electrophoresis
+        (HbA2, HbF) and iron studies, and refer to a clinician or hematologist for
+        interpretation and management.
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-secondary" onclick="window.print()">Print / save report</button>
+        <button class="btn-primary" onclick="resetApp()">New screening</button>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="credit">ThalCheck prototype &middot; MLT Department &middot; for educational / screening use only</footer>
+</div>
+
+<script>
+  const screens = ['screen1','screen2','screen3'];
+  let patient = {};
+
+  function setStep(n){
+    document.getElementById('stepFill').style.width = (n*33.33)+'%';
+    document.getElementById('stepLabel').textContent = 'Step '+n+' of 3';
+  }
+
+  function showScreen(id, stepNum){
+    screens.forEach(s => document.getElementById(s).classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    setStep(stepNum);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function markInvalid(fieldId, invalid){
+    const el = document.getElementById(fieldId);
+    el.classList.toggle('invalid', invalid);
+  }
+
+  function validateScreen1(){
+    let ok = true;
+    const name = document.getElementById('name').value.trim();
+    const age = document.getElementById('age').value;
+    const sex = document.getElementById('sex').value;
+    const email = document.getElementById('email').value.trim();
+    const place = document.getElementById('place').value.trim();
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    markInvalid('f-name', name.length === 0); if(!name) ok=false;
+    markInvalid('f-age', !(age !== '' && age >= 0 && age <= 120)); if(!(age !== '' && age >= 0 && age <= 120)) ok=false;
+    markInvalid('f-sex', !sex); if(!sex) ok=false;
+    markInvalid('f-email', !emailRe.test(email)); if(!emailRe.test(email)) ok=false;
+    markInvalid('f-place', place.length === 0); if(!place) ok=false;
+
+    if(ok){
+      patient = { name, age, sex, email, place };
+    }
+    return ok;
+  }
+
+  function goToScreen2(){
+    if(validateScreen1()){
+      showScreen('screen2', 2);
+    }
+  }
+  function goToScreen1(){
+    showScreen('screen1', 1);
+  }
+
+  function validateScreen2(){
+    let ok = true;
+    const ranges = {
+      hb:   [3, 20],
+      rbc:  [1, 8],
+      mcv:  [40, 130],
+      mch:  [10, 45],
+      mchc: [20, 40],
+      rdw:  [9, 30]
+    };
+    const values = {};
+    for(const key in ranges){
+      const v = parseFloat(document.getElementById(key).value);
+      const [min,max] = ranges[key];
+      const bad = isNaN(v) || v < min || v > max;
+      markInvalid('f-'+key, bad);
+      if(bad) ok = false;
+      values[key] = v;
+    }
+    if(ok) patient.cbc = values;
+    return ok;
+  }
+
+  function calculateAndShowResult(){
+    if(!validateScreen2()) return;
+    const { hb, rbc, mcv, mch, mchc, rdw } = patient.cbc;
+
+    const indices = [
+      {
+        name: 'Mentzer Index',
+        formula: 'MCV / RBC',
+        value: mcv / rbc,
+        thalWhen: v => v < 13
+      },
+      {
+        name: 'Shine & Lal Index',
+        formula: 'MCV² × MCH / 100',
+        value: (mcv*mcv*mch) / 100,
+        thalWhen: v => v < 1530
+      },
+      {
+        name: 'Srivastava Index',
+        formula: 'MCH / RBC',
+        value: mch / rbc,
+        thalWhen: v => v < 3.8
+      },
+      {
+        name: 'Green & King Index',
+        formula: 'MCV² × RDW / (Hb × 100)',
+        value: (mcv*mcv*rdw) / (hb*100),
+        thalWhen: v => v < 72
+      },
+      {
+        name: 'Ehsani Index',
+        formula: 'MCV − (10 × RBC)',
+        value: mcv - (10*rbc),
+        thalWhen: v => v < 13
+      },
+      {
+        name: 'Sirdah Index',
+        formula: 'MCV − RDW − (3 × Hb)',
+        value: mcv - rdw - (3*hb),
+        thalWhen: v => v < 0
+      }
+    ];
+
+    let thalCount = 0, idaCount = 0;
+    indices.forEach(idx => {
+      idx.leansThal = idx.thalWhen(idx.value);
+      if(idx.leansThal) thalCount++; else idaCount++;
+    });
+
+    renderResults(indices, thalCount, idaCount);
+    showScreen('screen3', 3);
+  }
+
+  function renderResults(indices, thalCount, idaCount){
+    // Patient strip
+    const p = patient;
+    document.getElementById('patientStrip').innerHTML =
+      `<span><b>${escapeHtml(p.name)}</b></span>` +
+      `<span>${p.age} yrs, ${p.sex}</span>` +
+      `<span>${escapeHtml(p.place)}</span>` +
+      `<span>${escapeHtml(p.email)}</span>` +
+      `<span>${new Date().toLocaleDateString()}</span>`;
+
+    // Index list
+    const list = document.getElementById('idxList');
+    list.innerHTML = '';
+    indices.forEach(idx => {
+      const row = document.createElement('div');
+      row.className = 'idx-row';
+      row.innerHTML = `
+        <div>
+          <div class="idx-name">${idx.name}</div>
+          <div class="idx-formula">${idx.formula}</div>
+        </div>
+        <div class="idx-right">
+          <span class="idx-value">${idx.value.toFixed(2)}</span>
+          <span class="pill ${idx.leansThal ? 'thal' : 'ida'}">${idx.leansThal ? 'Thal-leaning' : 'IDA-leaning'}</span>
+        </div>`;
+      list.appendChild(row);
+    });
+
+    // Verdict — majority vote across 6 indices
+    const box = document.getElementById('verdictBox');
+    const tag = document.getElementById('verdictTag');
+    const title = document.getElementById('verdictTitle');
+    const body = document.getElementById('verdictBody');
+    const score = document.getElementById('verdictScore');
+
+    box.classList.remove('thal','ida','normal','mixed');
+
+    const { hb, mcv } = patient.cbc;
+    const normalCBC = hb >= 12 && mcv >= 80 && mcv <= 100;
+
+    if(normalCBC){
+      box.classList.add('normal');
+      tag.textContent = 'SCREENING RESULT';
+      title.textContent = 'No microcytic anemia pattern';
+      body.textContent = 'Hb and MCV fall within a broadly normal range, so the thalassemia-vs-IDA discriminant indices are not the primary concern here. If symptoms persist, evaluate on clinical grounds.';
+    } else if(thalCount >= 4){
+      box.classList.add('thal');
+      tag.textContent = 'SCREENING RESULT';
+      title.textContent = 'Pattern suggests possible Thalassemia Trait';
+      body.textContent = `${thalCount} of 6 discriminant indices point toward thalassemia trait rather than iron-deficiency anemia. Recommend HbA2/HbF via HPLC and iron studies (serum ferritin) to confirm before any conclusion.`;
+    } else if(idaCount >= 4){
+      box.classList.add('ida');
+      tag.textContent = 'SCREENING RESULT';
+      title.textContent = 'Pattern suggests possible Iron Deficiency Anemia';
+      body.textContent = `${idaCount} of 6 discriminant indices point toward iron-deficiency anemia rather than thalassemia trait. Recommend serum ferritin / iron studies to confirm, with a trial of iron therapy and repeat CBC as clinically indicated.`;
+    } else {
+      box.classList.add('mixed');
+      tag.textContent = 'SCREENING RESULT';
+      title.textContent = 'Indeterminate — indices are split';
+      body.textContent = 'The six indices do not agree on a single direction. This pattern needs further testing — HbA2/HbF via HPLC and iron studies — rather than a call from CBC indices alone.';
+    }
+    score.textContent = `Index vote: ${thalCount} thalassemia-leaning · ${idaCount} IDA-leaning (of 6)`;
+  }
+
+  function resetApp(){
+    document.querySelectorAll('input').forEach(i => i.value = '');
+    document.getElementById('sex').value = '';
+    document.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
+    patient = {};
+    showScreen('screen1', 1);
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[m]));
+  }
+</script>
+</body>
+</html>
