@@ -1,73 +1,75 @@
 # ThalCheck — Thalassemia / IDA Screening Prototype
 
-A single-file web app matching your project brief: Screen 1 collects patient
-details, Screen 2 collects CBC values, Screen 3 auto-calculates discriminant
-indices and gives a screening suggestion.
+A single-file web application upgraded for medical research decision-support:
+- **Screen 1**: Patient details (Name, Age, Sex, Email, Place).
+- **Screen 2**: CBC parameters (Hb, RBC, MCV, MCH, RDW, HCT / PCV) with strict validation against invalid values and division by zero.
+- **Screen 3**: Automated calculation of 11 published discriminant indices, individual cutoff evaluation, fixed weighted voting, weighted screening score breakdown, and final classification.
+
+---
 
 ## Files
-- `index.html` — the entire app (HTML + CSS + JS, no build step, no external
-  dependencies or internet connection required). Open it directly in any
-  browser, or host it on any web server.
+- `index.html` — The entire screening application (HTML + CSS + JS, no external libraries, client-side offline calculation).
+- `manifest.json` — Web App Manifest configured for standalone PWA installation.
+- `sw.js` — Service Worker caching all assets for complete offline capability.
+- `icon-192.png`, `icon-512.png`, `icon.svg` — PWA and mobile icons.
+- `README.md` — Project documentation and mathematical reference.
 
-## What it calculates
+---
 
-CBC inputs: **Hb, RBC, MCV, MCH, MCHC, RDW**.
+## The 11 Discriminant Indices & Formulas
 
-Six published discriminant indices are computed automatically:
+| # | Index | Formula | Cut-off (THAL vs. IDA) | Research Weight |
+|---|---|---|---|:---:|
+| 1 | **England & Fraser** | `MCV − RBC − (5 × Hb) − 3.4` | `< 0.0` $\rightarrow$ THAL, $\ge 0.0$ $\rightarrow$ IDA | **3** |
+| 2 | **Green & King** | `(MCV² × RDW) / (Hb × 100)` | `< 65.0` $\rightarrow$ THAL, $\ge 65.0$ $\rightarrow$ IDA | **3** |
+| 3 | **Mentzer** | `MCV / RBC` | `< 13.0` $\rightarrow$ THAL, $\ge 13.0$ $\rightarrow$ IDA | **2** |
+| 4 | **Shine & Lal** | `MCV² × MCH × 0.01` | `< 1530.0` $\rightarrow$ THAL, $\ge 1530.0$ $\rightarrow$ IDA | **2** |
+| 5 | **Ricerca** | `RDW / RBC` | `< 4.4` $\rightarrow$ THAL, $\ge 4.4$ $\rightarrow$ IDA | **1** |
+| 6 | **Srivastava** | `MCH / RBC` | `< 3.8` $\rightarrow$ THAL, $\ge 3.8$ $\rightarrow$ IDA | **1** |
+| 7 | **Ehsani** | `MCV − (10 × RBC)` | `< 15.0` $\rightarrow$ THAL, $\ge 15.0$ $\rightarrow$ IDA | **1** |
+| 8 | **Sirdah** | `MCV − RBC − (3 × Hb)` | `< 27.0` $\rightarrow$ THAL, $\ge 27.0$ $\rightarrow$ IDA | **1** |
+| 9 | **Bordbar** | `MCV − MCH` | `< 4.76` $\rightarrow$ THAL, $\ge 4.76$ $\rightarrow$ IDA | **2** |
+| 10 | **RDW Index** | `(RDW × MCV) / RBC` | `< 220.0` $\rightarrow$ THAL, $\ge 220.0$ $\rightarrow$ IDA | **2** |
+| 11 | **Logit Model** | Logistic Regression (see below) | `Probability > 0.5` $\rightarrow$ THAL, $\le 0.5$ $\rightarrow$ IDA | **1** |
 
-| Index | Formula | Suggests Thalassemia when |
-|---|---|---|
-| Mentzer | MCV / RBC | < 13 |
-| Shine & Lal | MCV² × MCH / 100 | < 1530 |
-| Srivastava | MCH / RBC | < 3.8 |
-| Green & King | MCV² × RDW / (Hb × 100) | < 72 |
-| Ehsani | MCV − (10 × RBC) | < 13 |
-| Sirdah | MCV − RDW − (3 × Hb) | < 0 |
+### Logit Model Formula:
+$$\text{Logit} = 7.4146 + (0.1154 \times \text{HCT}) - (0.1764 \times \text{MCV}) + (0.0745 \times \text{MCH}) - (0.0529 \times \text{RDW})$$
+$$\text{Probability of Thalassemia} = \frac{1}{1 + e^{-\text{Logit}}}$$
 
-The final on-screen verdict is a **majority vote** across the six indices
-(≥4/6 agreeing in one direction), with an "Indeterminate" result when they
-split evenly. If Hb and MCV are both in the normal range, it reports "no
-microcytic anemia pattern" instead of forcing a verdict.
+The model's probability is reported separately as an individual model vote (Weight = 1).
 
-**Important — these cutoffs are literature-standard values, not a diagnosis.**
-Every published study on these indices agrees no single index is 100%
-sensitive/specific, which is exactly why your deck's own roadmap calls for
-HPLC integration and multicenter validation later. Keep the "Not a
-diagnosis" disclaimer on the results screen — a college MLT project
-presenting unvalidated automatic diagnoses would be a problem in review.
+---
 
-## Running it
-Just double-click `index.html`, or for a shareable link, upload it to any
-static host (GitHub Pages, Netlify, Vercel, or your college server) — it's a
-single file with zero dependencies.
+## Weighted Voting System
 
-## Turning this into an Android app (for your roadmap's later phase)
-You don't need to rewrite anything in Java/Kotlin. Once it's hosted at a
-URL, wrap it with one of these (all free/low-cost, common for student
-projects):
-- **PWABuilder** (pwabuilder.com) — paste your hosted URL, generates a
-  signed `.apk`/`.aab` directly from the web app.
-- **Capacitor** (capacitorjs.com) — wraps this exact HTML/JS/CSS in a real
-  Android project if you need native features (camera for the HPLC OCR
-  scan mentioned in your deck, cloud sync, etc. later).
-- **Bubblewrap / Trusted Web Activity** — Google's official tool for
-  turning a PWA into a Play Store-ready APK.
+$$\text{Total Weight} = 3 + 3 + 2 + 2 + 1 + 1 + 1 + 1 + 2 + 2 + 1 = 19$$
 
-## Extending toward your full deck
-This build covers Phase 1 of your roadmap ("Prototype: Basic app with CBC
-input → auto index calculation"). Natural next additions, in order:
-1. HbA2/HbF input fields once HPLC values are available, to refine the
-   verdict (your deck's Phase 2).
-2. A results history (needs a backend or a database like Firebase —
-   currently each screening is a fresh session, nothing is stored).
-3. PDF/Excel export of the report.
-4. OCR for scanned HPLC reports, and the AI-driven interpretation layer —
-   both are meaningfully bigger builds and worth scoping as separate
-   milestones.
+For each index vote:
+- If vote = **THALASSAEMIA**: `THAL_WEIGHTED_SCORE += weight`
+- If vote = **IDA**: `IDA_WEIGHTED_SCORE += weight`
 
-## Sources for the formulas
-Mentzer (1973), Shine & Lal (1977), Srivastava (1973), Green & King (1989),
-Ehsani et al. (2009), Sirdah et al. (2008) — these are the same indices
-cross-referenced in recent comparative studies, e.g. Laboratory Medicine
-(Oxford Academic, 2017) and Scientific Reports (Nature, 2019), both of
-which discuss all six indices used here.
+$$\text{THAL\_PERCENT} = \left(\frac{\text{THAL\_WEIGHTED\_SCORE}}{19}\right) \times 100$$
+$$\text{IDA\_PERCENT} = \left(\frac{\text{IDA\_WEIGHTED\_SCORE}}{19}\right) \times 100$$
+
+---
+
+## Final Screening Classification
+
+- **$\text{THAL\_PERCENT} \ge 70.0\%$**: **Likely Thalassemia Trait**
+- **$40.0\% \le \text{THAL\_PERCENT} < 70.0\%$**: **Indeterminate**  
+  *Actionable Recommendation:* **"Recommend HPLC for further confirmation."**
+- **$\text{THAL\_PERCENT} < 40.0\%$**: **Likely IDA**
+
+> **Important Terminology**: The score is presented as a **"Weighted Screening Score"**, representing weighted consensus among published discriminant indices, not a clinically validated probability.
+
+---
+
+## PWA & Mobile Installation
+- **Offline operation**: Caching via `sw.js` ensures all 11 mathematical calculations run fully client-side without an internet connection.
+- **Installable PWA**: Compatible with modern desktop and mobile browsers (Chrome, Edge, Safari, Firefox).
+- **Packaging ready**: Ready for packaging as an Android APK (using Bubblewrap / Capacitor / PWABuilder) or iOS app.
+
+---
+
+## Medical Disclaimer
+*This application is intended for educational and research screening purposes only. It is not a substitute for clinical diagnosis. Results should be interpreted by a qualified healthcare professional, and confirmatory testing such as HPLC may be required.*

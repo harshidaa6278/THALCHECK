@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#123B41">
+<meta name="description" content="ThalCheck — 11-Index Weighted Decision-Support Screening Prototype for Thalassemia Trait and Iron Deficiency Anemia">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>ThalCheck — Thalassemia / IDA Screening</title>
 <style>
   :root{
@@ -38,7 +43,7 @@
     -webkit-font-smoothing:antialiased;
   }
   .shell{
-    max-width:640px;
+    max-width:720px;
     margin:0 auto;
     padding:28px 20px 60px;
   }
@@ -175,7 +180,7 @@
     display:none;
   }
   .field.invalid .err-msg{ display:block; }
-  .field.invalid input{ border-color:var(--red); }
+  .field.invalid input, .field.invalid select{ border-color:var(--red); }
 
   .actions{
     display:flex;
@@ -216,37 +221,51 @@
   .verdict{
     border-radius:var(--radius);
     padding:22px 24px;
-    margin-bottom:22px;
+    margin-bottom:20px;
     border:1.4px solid;
   }
   .verdict.thal{ background:var(--amber-soft); border-color:#EBD3A0; }
   .verdict.ida{ background:var(--red-soft); border-color:#EDC5C1; }
   .verdict.normal{ background:var(--green-soft); border-color:#BFE1CB; }
-  .verdict.mixed{ background:#EEF1F5; border-color:#D6DCE3; }
+  .verdict.mixed{ background:#FFF6E5; border-color:#E8CFA0; }
   .verdict .tag{
     font-size:11.5px;
     font-weight:700;
-    letter-spacing:0.02em;
+    letter-spacing:0.04em;
     margin-bottom:6px;
     display:block;
+    text-transform:uppercase;
   }
-  .verdict.thal .tag{ color:var(--amber); }
+  .verdict.thal .tag{ color:#8C5908; }
   .verdict.ida .tag{ color:var(--red); }
   .verdict.normal .tag{ color:var(--green); }
-  .verdict.mixed .tag{ color:var(--muted); }
+  .verdict.mixed .tag{ color:#946309; }
   .verdict h2{
     font-family:var(--serif);
-    font-size:20px;
-    margin:0 0 6px;
+    font-size:22px;
+    margin:0 0 8px;
     color:var(--navy-deep);
   }
   .verdict p{
     margin:0;
-    font-size:13.5px;
+    font-size:14px;
     color:var(--ink);
     line-height:1.55;
   }
-  .verdict .score{
+  .verdict .recommendation-box{
+    margin-top:14px;
+    padding:12px 14px;
+    background:#FFFFFF;
+    border:1.5px dashed #D69E2E;
+    border-radius:8px;
+    font-size:13.5px;
+    font-weight:600;
+    color:#744210;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .verdict .score-sub{
     font-size:12.5px;
     color:var(--muted);
     margin-top:10px;
@@ -258,58 +277,192 @@
     gap:6px 16px;
     font-size:12.5px;
     color:var(--muted);
-    margin-bottom:20px;
-    padding-bottom:16px;
+    margin-bottom:12px;
+    padding-bottom:12px;
     border-bottom:1px solid var(--line);
   }
   .patient-strip b{ color:var(--navy-deep); font-weight:600; }
 
-  .idx-list{
+  .cbc-strip{
     display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-bottom:22px;
+    flex-wrap:wrap;
+    gap:8px;
+    font-size:12px;
+    margin-bottom:20px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
   }
-  .idx-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:13px 16px;
-    border-radius:10px;
+  .cbc-chip{
+    background:#F1F5F4;
     border:1px solid var(--line);
-    background:#FCFDFD;
-  }
-  .idx-name{
-    font-size:13.5px;
-    font-weight:600;
-    color:var(--navy-deep);
-  }
-  .idx-formula{
-    font-size:11px;
-    color:var(--muted);
-    margin-top:2px;
-  }
-  .idx-right{
-    text-align:right;
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .idx-value{
-    font-size:15px;
-    font-weight:700;
+    border-radius:6px;
+    padding:4px 9px;
     color:var(--ink);
     font-variant-numeric:tabular-nums;
   }
+  .cbc-chip b{ color:var(--navy-deep); }
+
+  /* Weighted Score Card */
+  .score-card{
+    background:#FAFBFB;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 20px;
+    margin-bottom:22px;
+  }
+  .score-card-title{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--navy-deep);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .score-metrics{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .score-stat{
+    background:#FFF;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+  }
+  .score-stat .lbl{
+    font-size:11.5px;
+    color:var(--muted);
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .score-stat .num{
+    font-size:20px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+  }
+  .score-stat.thal-stat .num{ color:#8C5908; }
+  .score-stat.ida-stat .num{ color:var(--red); }
+  .score-stat .pts{
+    font-size:11.5px;
+    font-weight:500;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .score-bar-track{
+    height:10px;
+    background:var(--red-soft);
+    border-radius:6px;
+    overflow:hidden;
+    display:flex;
+  }
+  .score-bar-fill{
+    height:100%;
+    background:#B5750E;
+    transition:width .4s ease;
+  }
+  .score-bar-labels{
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+    font-weight:500;
+  }
+
+  /* Table of 11 Indices */
+  .table-title{
+    font-family:var(--serif);
+    font-size:16px;
+    font-weight:600;
+    color:var(--navy-deep);
+    margin:0 0 10px;
+  }
+  .table-container{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#FCFDFD;
+    margin-bottom:22px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .idx-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+    text-align:left;
+  }
+  .idx-table th{
+    background:#F2F6F5;
+    color:var(--navy-deep);
+    font-weight:600;
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  .idx-table td{
+    padding:11px 12px;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  .idx-table tr:last-child td{
+    border-bottom:none;
+  }
+  .idx-table tr:hover td{
+    background:#F8FAFA;
+  }
+  .idx-cell-name{
+    font-weight:600;
+    color:var(--navy-deep);
+    white-space:nowrap;
+  }
+  .idx-cell-formula{
+    font-size:10.5px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .idx-cell-val{
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .idx-cell-val small{
+    display:block;
+    font-size:10.5px;
+    font-weight:500;
+    color:var(--muted);
+  }
+  .idx-cell-cutoff{
+    color:var(--muted);
+    font-size:11.5px;
+    white-space:nowrap;
+  }
+  .wt-badge{
+    display:inline-block;
+    background:#EDF3F2;
+    color:var(--navy);
+    padding:2px 8px;
+    border-radius:12px;
+    font-weight:700;
+    font-size:11.5px;
+    text-align:center;
+  }
+
   .pill{
     font-size:11px;
     font-weight:700;
-    padding:4px 10px;
-    border-radius:20px;
+    padding:3px 8px;
+    border-radius:14px;
     white-space:nowrap;
+    letter-spacing:0.02em;
+    display:inline-block;
   }
-  .pill.thal{ background:var(--amber-soft); color:var(--amber); }
-  .pill.ida{ background:var(--red-soft); color:var(--red); }
+  .pill.thal{ background:var(--amber-soft); color:#8C5908; border:1px solid #ECD5AC; }
+  .pill.ida{ background:var(--red-soft); color:var(--red); border:1px solid #F0C9C5; }
 
   .disclaimer{
     font-size:12px;
@@ -343,12 +496,14 @@
   @media print{
     .stepper, .actions, .result-actions, header .dept-tag{ display:none !important; }
     body{ background:#fff; }
-    .card{ box-shadow:none; border:none; }
+    .card{ box-shadow:none; border:none; padding:0; }
+    .shell{ max-width:100%; padding:0; }
   }
 
-  @media (max-width:420px){
+  @media (max-width:480px){
     .row2{ grid-template-columns:1fr; }
-    .card{ padding:22px 18px; }
+    .score-metrics{ grid-template-columns:1fr; }
+    .card{ padding:20px 16px; }
   }
 </style>
 </head>
@@ -356,8 +511,8 @@
 <div class="shell">
 
   <header class="app-head">
-    <div class="brand">ThalCheck<small>MLT Dept · Screening Prototype</small></div>
-    <div class="dept-tag">Decision-support only</div>
+    <div class="brand">ThalCheck<small>Medical Research Decision-Support · Screening Prototype</small></div>
+    <div class="dept-tag">Research Screening</div>
   </header>
 
   <div class="stepper">
@@ -392,7 +547,7 @@
             <option value="Male">Male</option>
             <option value="Other">Other</option>
           </select>
-          <div class="err-msg">Select a value.</div>
+          <div class="err-msg">Select a sex.</div>
         </div>
       </div>
 
@@ -417,18 +572,18 @@
     <!-- SCREEN 2: CBC input -->
     <section class="screen" id="screen2">
       <h1 class="screen-title">CBC parameters</h1>
-      <p class="screen-sub">Enter the complete blood count values exactly as reported by the analyzer.</p>
+      <p class="screen-sub">Enter the complete blood count values exactly as reported by the automated analyzer.</p>
 
       <div class="row2">
         <div class="field" id="f-hb">
           <label for="hb">Hemoglobin (Hb) <span class="hint">g/dL</span></label>
           <input type="number" step="0.1" id="hb" placeholder="e.g. 10.2">
-          <div class="err-msg">Enter Hb between 3–20 g/dL.</div>
+          <div class="err-msg">Enter Hb between 3.0 and 25.0 g/dL (must be &gt; 0).</div>
         </div>
         <div class="field" id="f-rbc">
           <label for="rbc">RBC count <span class="hint">million/µL</span></label>
-          <input type="number" step="0.01" id="rbc" placeholder="e.g. 5.4">
-          <div class="err-msg">Enter RBC between 1–8 million/µL.</div>
+          <input type="number" step="0.01" id="rbc" placeholder="e.g. 5.40">
+          <div class="err-msg">Enter RBC between 1.0 and 9.0 million/µL (must be &gt; 0).</div>
         </div>
       </div>
 
@@ -436,25 +591,25 @@
         <div class="field" id="f-mcv">
           <label for="mcv">MCV <span class="hint">fL</span></label>
           <input type="number" step="0.1" id="mcv" placeholder="e.g. 62.5">
-          <div class="err-msg">Enter MCV between 40–130 fL.</div>
+          <div class="err-msg">Enter MCV between 35.0 and 135.0 fL.</div>
         </div>
         <div class="field" id="f-mch">
           <label for="mch">MCH <span class="hint">pg</span></label>
           <input type="number" step="0.1" id="mch" placeholder="e.g. 19.8">
-          <div class="err-msg">Enter MCH between 10–45 pg.</div>
+          <div class="err-msg">Enter MCH between 10.0 and 50.0 pg.</div>
         </div>
       </div>
 
       <div class="row2">
-        <div class="field" id="f-mchc">
-          <label for="mchc">MCHC <span class="hint">g/dL</span></label>
-          <input type="number" step="0.1" id="mchc" placeholder="e.g. 31.0">
-          <div class="err-msg">Enter MCHC between 20–40 g/dL.</div>
-        </div>
         <div class="field" id="f-rdw">
           <label for="rdw">RDW-CV <span class="hint">%</span></label>
           <input type="number" step="0.1" id="rdw" placeholder="e.g. 15.4">
-          <div class="err-msg">Enter RDW between 9–30%.</div>
+          <div class="err-msg">Enter RDW between 8.0 and 35.0%.</div>
+        </div>
+        <div class="field" id="f-hct">
+          <label for="hct">Hematocrit (HCT / PCV) <span class="hint">%</span></label>
+          <input type="number" step="0.1" id="hct" placeholder="e.g. 34.5">
+          <div class="err-msg">Enter HCT between 10.0 and 70.0%.</div>
         </div>
       </div>
 
@@ -467,23 +622,64 @@
     <!-- SCREEN 3: Results -->
     <section class="screen" id="screen3">
       <div class="patient-strip" id="patientStrip"></div>
+      <div class="cbc-strip" id="cbcStrip"></div>
 
+      <!-- FINAL VERDICT BANNER -->
       <div id="verdictBox" class="verdict mixed">
         <span class="tag" id="verdictTag">SCREENING RESULT</span>
         <h2 id="verdictTitle">—</h2>
         <p id="verdictBody">—</p>
-        <div class="score" id="verdictScore"></div>
+        <div id="verdictRecommendation" class="recommendation-box" style="display:none;"></div>
+        <div class="score-sub" id="verdictScore"></div>
       </div>
 
-      <div class="idx-list" id="idxList"></div>
+      <!-- WEIGHTED SUMMARY -->
+      <div class="score-card">
+        <div class="score-card-title">
+          <span>Weighted Screening Summary</span>
+          <span id="totalWeightBadge" style="font-weight:600; color:var(--muted); font-size:11px;">Total Weight: 19</span>
+        </div>
+        <div class="score-metrics">
+          <div class="score-stat thal-stat">
+            <div class="lbl">THALASSEMIA SCORE</div>
+            <div class="num" id="thalScorePercent">0.00%</div>
+            <div class="pts" id="thalScorePoints">0 of 19 weighted points</div>
+          </div>
+          <div class="score-stat ida-stat">
+            <div class="lbl">IDA SCORE</div>
+            <div class="num" id="idaScorePercent">0.00%</div>
+            <div class="pts" id="idaScorePoints">0 of 19 weighted points</div>
+          </div>
+        </div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" id="scoreBarFill" style="width:50%"></div>
+        </div>
+        <div class="score-bar-labels">
+          <span id="barThalLabel">Thalassemia Trait: 50%</span>
+          <span id="barIdaLabel">IDA: 50%</span>
+        </div>
+      </div>
 
+      <!-- 11 INDICES DETAILED TABLE -->
+      <h3 class="table-title">Discriminant Index Results (11 Indices)</h3>
+      <div class="table-container">
+        <table class="idx-table">
+          <thead>
+            <tr>
+              <th>Index</th>
+              <th>Calculated Value</th>
+              <th>Cut-off</th>
+              <th>Interpretation / Vote</th>
+              <th style="text-align:center;">Weight</th>
+            </tr>
+          </thead>
+          <tbody id="idxTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- MEDICAL DISCLAIMER -->
       <div class="disclaimer">
-        <b>Not a diagnosis.</b> These are published discriminant-index calculations
-        (Mentzer, Shine &amp; Lal, Srivastava, Green &amp; King, Ehsani, Sirdah) intended for
-        rapid point-of-care screening only. No single index is 100% sensitive or specific.
-        Confirm any thalassemia-leaning result with hemoglobin HPLC / electrophoresis
-        (HbA2, HbF) and iron studies, and refer to a clinician or hematologist for
-        interpretation and management.
+        <b>Medical Disclaimer:</b> This application is intended for educational and research screening purposes only. It is not a substitute for clinical diagnosis. Results should be interpreted by a qualified healthcare professional, and confirmatory testing such as HPLC may be required.
       </div>
 
       <div class="result-actions">
@@ -494,16 +690,35 @@
 
   </div>
 
-  <footer class="credit">ThalCheck prototype &middot; MLT Department &middot; for educational / screening use only</footer>
+  <footer class="credit">ThalCheck &middot; Medical Research Decision-Support Prototype &middot; Client-Side Screening Only</footer>
 </div>
 
 <script>
-  const screens = ['screen1','screen2','screen3'];
+  // ========================================================
+  // CONFIGURATION: INDEX WEIGHTS
+  // Fixed configuration values from research team specifications
+  // ========================================================
+  const INDEX_WEIGHTS = {
+    englandFraser: 3,
+    greenKing: 3,
+    mentzer: 2,
+    shineLal: 2,
+    ricerca: 1,
+    srivastava: 1,
+    ehsani: 1,
+    sirdah: 1,
+    bordbar: 2,
+    rdwIndex: 2,
+    logit: 1
+  };
+
+  const screens = ['screen1', 'screen2', 'screen3'];
   let patient = {};
 
+  // Stepper UI control
   function setStep(n){
-    document.getElementById('stepFill').style.width = (n*33.33)+'%';
-    document.getElementById('stepLabel').textContent = 'Step '+n+' of 3';
+    document.getElementById('stepFill').style.width = (n * 33.33) + '%';
+    document.getElementById('stepLabel').textContent = 'Step ' + n + ' of 3';
   }
 
   function showScreen(id, stepNum){
@@ -515,9 +730,13 @@
 
   function markInvalid(fieldId, invalid){
     const el = document.getElementById(fieldId);
-    el.classList.toggle('invalid', invalid);
+    if(el) el.classList.toggle('invalid', invalid);
   }
 
+  // ========================================================
+  // SCREEN 1 VALIDATION (Patient Details)
+  // Preserves Name, Age, Sex, Email, Place
+  // ========================================================
   function validateScreen1(){
     let ok = true;
     const name = document.getElementById('name').value.trim();
@@ -527,11 +746,25 @@
     const place = document.getElementById('place').value.trim();
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    markInvalid('f-name', name.length === 0); if(!name) ok=false;
-    markInvalid('f-age', !(age !== '' && age >= 0 && age <= 120)); if(!(age !== '' && age >= 0 && age <= 120)) ok=false;
-    markInvalid('f-sex', !sex); if(!sex) ok=false;
-    markInvalid('f-email', !emailRe.test(email)); if(!emailRe.test(email)) ok=false;
-    markInvalid('f-place', place.length === 0); if(!place) ok=false;
+    const badName = name.length === 0;
+    markInvalid('f-name', badName);
+    if(badName) ok = false;
+
+    const badAge = !(age !== '' && !isNaN(age) && Number(age) >= 0 && Number(age) <= 120);
+    markInvalid('f-age', badAge);
+    if(badAge) ok = false;
+
+    const badSex = !sex;
+    markInvalid('f-sex', badSex);
+    if(badSex) ok = false;
+
+    const badEmail = !emailRe.test(email);
+    markInvalid('f-email', badEmail);
+    if(badEmail) ok = false;
+
+    const badPlace = place.length === 0;
+    markInvalid('f-place', badPlace);
+    if(badPlace) ok = false;
 
     if(ok){
       patient = { name, age, sex, email, place };
@@ -544,153 +777,420 @@
       showScreen('screen2', 2);
     }
   }
+
   function goToScreen1(){
     showScreen('screen1', 1);
   }
 
+  // ========================================================
+  // SCREEN 2 VALIDATION (CBC Parameters)
+  // Validates: Hb, RBC, MCV, MCH, RDW, HCT
+  // Ensures numeric, within physiological limits, prevents division by zero
+  // ========================================================
   function validateScreen2(){
     let ok = true;
     const ranges = {
-      hb:   [3, 20],
-      rbc:  [1, 8],
-      mcv:  [40, 130],
-      mch:  [10, 45],
-      mchc: [20, 40],
-      rdw:  [9, 30]
+      hb:  { min: 3.0,  max: 25.0, divZeroGuard: true },
+      rbc: { min: 1.0,  max: 9.0,  divZeroGuard: true },
+      mcv: { min: 35.0, max: 135.0 },
+      mch: { min: 10.0, max: 50.0 },
+      rdw: { min: 8.0,  max: 35.0 },
+      hct: { min: 10.0, max: 70.0 }
     };
+
     const values = {};
     for(const key in ranges){
-      const v = parseFloat(document.getElementById(key).value);
-      const [min,max] = ranges[key];
-      const bad = isNaN(v) || v < min || v > max;
-      markInvalid('f-'+key, bad);
+      const el = document.getElementById(key);
+      const raw = el ? el.value.trim() : '';
+      const v = parseFloat(raw);
+      const conf = ranges[key];
+      const bad = raw === '' || isNaN(v) || !isFinite(v) || v < conf.min || v > conf.max || (conf.divZeroGuard && v <= 0);
+
+      markInvalid('f-' + key, bad);
       if(bad) ok = false;
       values[key] = v;
     }
-    if(ok) patient.cbc = values;
+
+    if(ok){
+      patient.cbc = values;
+    }
     return ok;
   }
 
-  function calculateAndShowResult(){
-    if(!validateScreen2()) return;
-    const { hb, rbc, mcv, mch, mchc, rdw } = patient.cbc;
+  // ========================================================
+  // 11 MODULAR DISCRIMINANT INDEX FUNCTIONS
+  // Follows exact research team formulas and cutoffs
+  // ========================================================
 
-    const indices = [
-      {
-        name: 'Mentzer Index',
-        formula: 'MCV / RBC',
-        value: mcv / rbc,
-        thalWhen: v => v < 13
-      },
-      {
-        name: 'Shine & Lal Index',
-        formula: 'MCV² × MCH / 100',
-        value: (mcv*mcv*mch) / 100,
-        thalWhen: v => v < 1530
-      },
-      {
-        name: 'Srivastava Index',
-        formula: 'MCH / RBC',
-        value: mch / rbc,
-        thalWhen: v => v < 3.8
-      },
-      {
-        name: 'Green & King Index',
-        formula: 'MCV² × RDW / (Hb × 100)',
-        value: (mcv*mcv*rdw) / (hb*100),
-        thalWhen: v => v < 72
-      },
-      {
-        name: 'Ehsani Index',
-        formula: 'MCV − (10 × RBC)',
-        value: mcv - (10*rbc),
-        thalWhen: v => v < 13
-      },
-      {
-        name: 'Sirdah Index',
-        formula: 'MCV − RDW − (3 × Hb)',
-        value: mcv - rdw - (3*hb),
-        thalWhen: v => v < 0
-      }
+  // 1. England & Fraser: MCV - RBC - (5 × Hb) - 3.4
+  // IDA: >= 0.0 | THAL: < 0.0
+  function calculateEnglandFraser(cbc){
+    const value = cbc.mcv - cbc.rbc - (5 * cbc.hb) - 3.4;
+    const vote = value < 0.0 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'englandFraser',
+      name: 'England & Fraser',
+      formula: 'MCV − RBC − (5 × Hb) − 3.4',
+      value: value,
+      displayValue: value.toFixed(2),
+      cutoff: '< 0.0 THAL (≥ 0.0 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.englandFraser
+    };
+  }
+
+  // 2. Green & King: (MCV² × RDW) / (Hb × 100)
+  // IDA: >= 65.0 | THAL: < 65.0
+  function calculateGreenKing(cbc){
+    const denom = (cbc.hb > 0 ? cbc.hb : 1) * 100;
+    const value = (Math.pow(cbc.mcv, 2) * cbc.rdw) / denom;
+    const vote = value < 65.0 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'greenKing',
+      name: 'Green & King',
+      formula: '(MCV² × RDW) / (Hb × 100)',
+      value: value,
+      displayValue: isFinite(value) ? value.toFixed(2) : 'N/A',
+      cutoff: '< 65.0 THAL (≥ 65.0 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.greenKing
+    };
+  }
+
+  // 3. Mentzer: MCV / RBC
+  // IDA: >= 13.0 | THAL: < 13.0
+  function calculateMentzer(cbc){
+    const rbc = cbc.rbc > 0 ? cbc.rbc : 1;
+    const value = cbc.mcv / rbc;
+    const vote = value < 13.0 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'mentzer',
+      name: 'Mentzer',
+      formula: 'MCV / RBC',
+      value: value,
+      displayValue: isFinite(value) ? value.toFixed(2) : 'N/A',
+      cutoff: '< 13.0 THAL (≥ 13.0 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.mentzer
+    };
+  }
+
+  // 4. Shine & Lal: MCV² × MCH × 0.01
+  // IDA: >= 1530.0 | THAL: < 1530.0
+  function calculateShineLal(cbc){
+    const value = Math.pow(cbc.mcv, 2) * cbc.mch * 0.01;
+    const vote = value < 1530.0 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'shineLal',
+      name: 'Shine & Lal',
+      formula: 'MCV² × MCH × 0.01',
+      value: value,
+      displayValue: isFinite(value) ? value.toFixed(2) : 'N/A',
+      cutoff: '< 1530.0 THAL (≥ 1530.0 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.shineLal
+    };
+  }
+
+  // 5. Ricerca: RDW / RBC
+  // IDA: >= 4.4 | THAL: < 4.4
+  function calculateRicerca(cbc){
+    const rbc = cbc.rbc > 0 ? cbc.rbc : 1;
+    const value = cbc.rdw / rbc;
+    const vote = value < 4.4 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'ricerca',
+      name: 'Ricerca',
+      formula: 'RDW / RBC',
+      value: value,
+      displayValue: isFinite(value) ? value.toFixed(2) : 'N/A',
+      cutoff: '< 4.4 THAL (≥ 4.4 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.ricerca
+    };
+  }
+
+  // 6. Srivastava: MCH / RBC
+  // IDA: >= 3.8 | THAL: < 3.8
+  function calculateSrivastava(cbc){
+    const rbc = cbc.rbc > 0 ? cbc.rbc : 1;
+    const value = cbc.mch / rbc;
+    const vote = value < 3.8 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'srivastava',
+      name: 'Srivastava',
+      formula: 'MCH / RBC',
+      value: value,
+      displayValue: isFinite(value) ? value.toFixed(2) : 'N/A',
+      cutoff: '< 3.8 THAL (≥ 3.8 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.srivastava
+    };
+  }
+
+  // 7. Ehsani: MCV - (10 × RBC)
+  // IDA: >= 15.0 | THAL: < 15.0
+  function calculateEhsani(cbc){
+    const value = cbc.mcv - (10 * cbc.rbc);
+    const vote = value < 15.0 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'ehsani',
+      name: 'Ehsani',
+      formula: 'MCV − (10 × RBC)',
+      value: value,
+      displayValue: value.toFixed(2),
+      cutoff: '< 15.0 THAL (≥ 15.0 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.ehsani
+    };
+  }
+
+  // 8. Sirdah: MCV - RBC - (3 × Hb)
+  // IDA: >= 27.0 | THAL: < 27.0
+  function calculateSirdah(cbc){
+    const value = cbc.mcv - cbc.rbc - (3 * cbc.hb);
+    const vote = value < 27.0 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'sirdah',
+      name: 'Sirdah',
+      formula: 'MCV − RBC − (3 × Hb)',
+      value: value,
+      displayValue: value.toFixed(2),
+      cutoff: '< 27.0 THAL (≥ 27.0 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.sirdah
+    };
+  }
+
+  // 9. Bordbar: MCV - MCH
+  // IDA: >= 4.76 | THAL: < 4.76
+  function calculateBordbar(cbc){
+    const value = cbc.mcv - cbc.mch;
+    const vote = value < 4.76 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'bordbar',
+      name: 'Bordbar',
+      formula: 'MCV − MCH',
+      value: value,
+      displayValue: value.toFixed(2),
+      cutoff: '< 4.76 THAL (≥ 4.76 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.bordbar
+    };
+  }
+
+  // 10. RDW Index: (RDW × MCV) / RBC
+  // IDA: >= 220.0 | THAL: < 220.0
+  function calculateRDWIndex(cbc){
+    const rbc = cbc.rbc > 0 ? cbc.rbc : 1;
+    const value = (cbc.rdw * cbc.mcv) / rbc;
+    const vote = value < 220.0 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'rdwIndex',
+      name: 'RDW Index',
+      formula: '(RDW × MCV) / RBC',
+      value: value,
+      displayValue: isFinite(value) ? value.toFixed(2) : 'N/A',
+      cutoff: '< 220.0 THAL (≥ 220.0 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.rdwIndex
+    };
+  }
+
+  // 11. Logit Model:
+  // Logit = 7.4146 + (0.1154 × HCT) - (0.1764 × MCV) + (0.0745 × MCH) - (0.0529 × RDW)
+  // Probability = 1 / (1 + e^(-Logit))
+  // Decision: Probability > 0.5 -> THALASSAEMIA | <= 0.5 -> IDA
+  function calculateLogit(cbc){
+    const logit = 7.4146 + (0.1154 * cbc.hct) - (0.1764 * cbc.mcv) + (0.0745 * cbc.mch) - (0.0529 * cbc.rdw);
+    const probability = 1.0 / (1.0 + Math.exp(-logit));
+    const vote = probability > 0.5 ? 'THALASSAEMIA' : 'IDA';
+    return {
+      id: 'logit',
+      name: 'Logit Model',
+      formula: 'Logistic Regression Model (HCT, MCV, MCH, RDW)',
+      value: logit,
+      displayValue: `Logit: ${logit.toFixed(3)}<small>Model Prob: ${(probability * 100).toFixed(2)}%</small>`,
+      cutoff: 'Prob > 0.50 THAL (≤ 0.50 IDA)',
+      vote: vote,
+      weight: INDEX_WEIGHTS.logit,
+      isLogit: true,
+      logitScore: logit,
+      probability: probability
+    };
+  }
+
+  // Master aggregator to calculate all 11 indices
+  function calculateAllIndices(cbc){
+    return [
+      calculateEnglandFraser(cbc),
+      calculateGreenKing(cbc),
+      calculateMentzer(cbc),
+      calculateShineLal(cbc),
+      calculateRicerca(cbc),
+      calculateSrivastava(cbc),
+      calculateEhsani(cbc),
+      calculateSirdah(cbc),
+      calculateBordbar(cbc),
+      calculateRDWIndex(cbc),
+      calculateLogit(cbc)
     ];
+  }
 
-    let thalCount = 0, idaCount = 0;
-    indices.forEach(idx => {
-      idx.leansThal = idx.thalWhen(idx.value);
-      if(idx.leansThal) thalCount++; else idaCount++;
+  // ========================================================
+  // WEIGHTED VOTING SYSTEM & CLASSIFICATION
+  // ========================================================
+  function calculateWeightedResult(indexResults){
+    let thalWeightedScore = 0;
+    let idaWeightedScore = 0;
+    let totalWeight = 0;
+
+    indexResults.forEach(idx => {
+      totalWeight += idx.weight;
+      if(idx.vote === 'THALASSAEMIA'){
+        thalWeightedScore += idx.weight;
+      } else {
+        idaWeightedScore += idx.weight;
+      }
     });
 
-    renderResults(indices, thalCount, idaCount);
+    const thalPercent = (thalWeightedScore / totalWeight) * 100;
+    const idaPercent = (idaWeightedScore / totalWeight) * 100;
+
+    let classification = '';
+    let recommendation = '';
+    let verdictClass = '';
+    let verdictBody = '';
+
+    // Thresholds: >= 70% Likely Thal Trait, 40%-69.99% Indeterminate, < 40% Likely IDA
+    if(thalPercent >= 70.0){
+      classification = 'Likely Thalassemia Trait';
+      verdictClass = 'thal';
+      verdictBody = `Weighted screening score of ${thalPercent.toFixed(2)}% (${thalWeightedScore}/${totalWeight} weighted points) meets the research threshold (≥ 70.00%) indicating high suspicion of Thalassemia Trait over Iron Deficiency Anemia.`;
+    } else if(thalPercent >= 40.0){
+      classification = 'Indeterminate';
+      verdictClass = 'mixed';
+      recommendation = 'Recommend HPLC for further confirmation.';
+      verdictBody = `Weighted screening score of ${thalPercent.toFixed(2)}% falls into the intermediate range (40.00% – 69.99%). The discriminant indices show conflicting evidence without a decisive separation.`;
+    } else {
+      classification = 'Likely IDA';
+      verdictClass = 'ida';
+      verdictBody = `Weighted screening score of ${thalPercent.toFixed(2)}% (${idaPercent.toFixed(2)}% IDA score) falls below 40.00%, pointing toward Iron Deficiency Anemia rather than Thalassemia Trait.`;
+    }
+
+    return {
+      thalWeightedScore,
+      idaWeightedScore,
+      totalWeight,
+      thalPercent,
+      idaPercent,
+      classification,
+      recommendation,
+      verdictClass,
+      verdictBody
+    };
+  }
+
+  // ========================================================
+  // ORCHESTRATION & RENDERING
+  // ========================================================
+  function calculateAndShowResult(){
+    if(!validateScreen2()) return;
+
+    const indexResults = calculateAllIndices(patient.cbc);
+    const weightedResult = calculateWeightedResult(indexResults);
+
+    renderResults(indexResults, weightedResult);
     showScreen('screen3', 3);
   }
 
-  function renderResults(indices, thalCount, idaCount){
-    // Patient strip
+  function renderResults(indexResults, wr){
+    // 1. Patient Strip
     const p = patient;
     document.getElementById('patientStrip').innerHTML =
       `<span><b>${escapeHtml(p.name)}</b></span>` +
-      `<span>${p.age} yrs, ${p.sex}</span>` +
+      `<span>${p.age} yrs, ${escapeHtml(p.sex)}</span>` +
       `<span>${escapeHtml(p.place)}</span>` +
       `<span>${escapeHtml(p.email)}</span>` +
       `<span>${new Date().toLocaleDateString()}</span>`;
 
-    // Index list
-    const list = document.getElementById('idxList');
-    list.innerHTML = '';
-    indices.forEach(idx => {
-      const row = document.createElement('div');
-      row.className = 'idx-row';
-      row.innerHTML = `
-        <div>
-          <div class="idx-name">${idx.name}</div>
-          <div class="idx-formula">${idx.formula}</div>
-        </div>
-        <div class="idx-right">
-          <span class="idx-value">${idx.value.toFixed(2)}</span>
-          <span class="pill ${idx.leansThal ? 'thal' : 'ida'}">${idx.leansThal ? 'Thal-leaning' : 'IDA-leaning'}</span>
-        </div>`;
-      list.appendChild(row);
-    });
+    // 2. CBC Parameters Strip
+    const c = patient.cbc;
+    document.getElementById('cbcStrip').innerHTML =
+      `<div class="cbc-chip"><b>Hb:</b> ${c.hb.toFixed(1)} g/dL</div>` +
+      `<div class="cbc-chip"><b>RBC:</b> ${c.rbc.toFixed(2)} M/µL</div>` +
+      `<div class="cbc-chip"><b>MCV:</b> ${c.mcv.toFixed(1)} fL</div>` +
+      `<div class="cbc-chip"><b>MCH:</b> ${c.mch.toFixed(1)} pg</div>` +
+      `<div class="cbc-chip"><b>RDW:</b> ${c.rdw.toFixed(1)}%</div>` +
+      `<div class="cbc-chip"><b>HCT:</b> ${c.hct.toFixed(1)}%</div>`;
 
-    // Verdict — majority vote across 6 indices
+    // 3. Verdict Banner
     const box = document.getElementById('verdictBox');
     const tag = document.getElementById('verdictTag');
     const title = document.getElementById('verdictTitle');
     const body = document.getElementById('verdictBody');
-    const score = document.getElementById('verdictScore');
+    const recBox = document.getElementById('verdictRecommendation');
+    const scoreSub = document.getElementById('verdictScore');
 
     box.classList.remove('thal','ida','normal','mixed');
+    box.classList.add(wr.verdictClass);
 
-    const { hb, mcv } = patient.cbc;
-    const normalCBC = hb >= 12 && mcv >= 80 && mcv <= 100;
+    tag.textContent = 'FINAL SCREENING RESULT';
+    title.textContent = wr.classification;
+    body.textContent = wr.verdictBody;
 
-    if(normalCBC){
-      box.classList.add('normal');
-      tag.textContent = 'SCREENING RESULT';
-      title.textContent = 'No microcytic anemia pattern';
-      body.textContent = 'Hb and MCV fall within a broadly normal range, so the thalassemia-vs-IDA discriminant indices are not the primary concern here. If symptoms persist, evaluate on clinical grounds.';
-    } else if(thalCount >= 4){
-      box.classList.add('thal');
-      tag.textContent = 'SCREENING RESULT';
-      title.textContent = 'Pattern suggests possible Thalassemia Trait';
-      body.textContent = `${thalCount} of 6 discriminant indices point toward thalassemia trait rather than iron-deficiency anemia. Recommend HbA2/HbF via HPLC and iron studies (serum ferritin) to confirm before any conclusion.`;
-    } else if(idaCount >= 4){
-      box.classList.add('ida');
-      tag.textContent = 'SCREENING RESULT';
-      title.textContent = 'Pattern suggests possible Iron Deficiency Anemia';
-      body.textContent = `${idaCount} of 6 discriminant indices point toward iron-deficiency anemia rather than thalassemia trait. Recommend serum ferritin / iron studies to confirm, with a trial of iron therapy and repeat CBC as clinically indicated.`;
+    if(wr.recommendation){
+      recBox.style.display = 'flex';
+      recBox.innerHTML = `<span><strong>Recommendation:</strong> ${escapeHtml(wr.recommendation)}</span>`;
     } else {
-      box.classList.add('mixed');
-      tag.textContent = 'SCREENING RESULT';
-      title.textContent = 'Indeterminate — indices are split';
-      body.textContent = 'The six indices do not agree on a single direction. This pattern needs further testing — HbA2/HbF via HPLC and iron studies — rather than a call from CBC indices alone.';
+      recBox.style.display = 'none';
+      recBox.innerHTML = '';
     }
-    score.textContent = `Index vote: ${thalCount} thalassemia-leaning · ${idaCount} IDA-leaning (of 6)`;
+
+    scoreSub.textContent = `Thalassemia Weighted Screening Score: ${wr.thalPercent.toFixed(2)}% · IDA Weighted Screening Score: ${wr.idaPercent.toFixed(2)}%`;
+
+    // 4. Weighted Summary Card
+    document.getElementById('totalWeightBadge').textContent = `Total Weight: ${wr.totalWeight}`;
+    document.getElementById('thalScorePercent').textContent = wr.thalPercent.toFixed(2) + '%';
+    document.getElementById('thalScorePoints').textContent = `${wr.thalWeightedScore} of ${wr.totalWeight} weighted points`;
+
+    document.getElementById('idaScorePercent').textContent = wr.idaPercent.toFixed(2) + '%';
+    document.getElementById('idaScorePoints').textContent = `${wr.idaWeightedScore} of ${wr.totalWeight} weighted points`;
+
+    const fillWidth = Math.min(Math.max(wr.thalPercent, 0), 100);
+    document.getElementById('scoreBarFill').style.width = fillWidth + '%';
+    document.getElementById('barThalLabel').textContent = `Thalassemia: ${wr.thalPercent.toFixed(1)}% (${wr.thalWeightedScore} pts)`;
+    document.getElementById('barIdaLabel').textContent = `IDA: ${wr.idaPercent.toFixed(1)}% (${wr.idaWeightedScore} pts)`;
+
+    // 5. Detailed Index Table (11 Indices)
+    const tbody = document.getElementById('idxTableBody');
+    tbody.innerHTML = '';
+
+    indexResults.forEach(idx => {
+      const tr = document.createElement('tr');
+      const isThal = idx.vote === 'THALASSAEMIA';
+      tr.innerHTML = `
+        <td>
+          <div class="idx-cell-name">${escapeHtml(idx.name)}</div>
+          <div class="idx-cell-formula">${escapeHtml(idx.formula)}</div>
+        </td>
+        <td class="idx-cell-val">${idx.displayValue}</td>
+        <td class="idx-cell-cutoff">${escapeHtml(idx.cutoff)}</td>
+        <td>
+          <span class="pill ${isThal ? 'thal' : 'ida'}">${isThal ? 'THALASSAEMIA' : 'IDA'}</span>
+        </td>
+        <td style="text-align:center;">
+          <span class="wt-badge">${idx.weight}</span>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
   }
 
   function resetApp(){
     document.querySelectorAll('input').forEach(i => i.value = '');
-    document.getElementById('sex').value = '';
+    const sexSelect = document.getElementById('sex');
+    if(sexSelect) sexSelect.value = '';
     document.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
     patient = {};
     showScreen('screen1', 1);
@@ -700,6 +1200,17 @@
     return String(str).replace(/[&<>"']/g, m => ({
       '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
     }[m]));
+  }
+
+  // ========================================================
+  // PWA SERVICE WORKER REGISTRATION (Offline Capability)
+  // ========================================================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => {
+        console.warn('PWA registration:', err);
+      });
+    });
   }
 </script>
 </body>
