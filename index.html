@@ -9,6 +9,9 @@
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap" rel="stylesheet">
 <title>ThalCheck — Thalassemia / IDA Screening</title>
 <style>
   :root{
@@ -28,8 +31,8 @@
     --green:#2E7D4F;
     --green-soft:#E4F3E8;
     --radius:14px;
-    --serif: "Source Serif 4","Georgia",serif;
-    --sans: "Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    --serif: "Georgia", "Source Serif 4", "Times New Roman", serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -927,6 +930,214 @@
     background:#FCFDFD;
   }
 
+  /* Prominent Researcher Portal Banner on Welcome Screen */
+  .portal-banner-card{
+    background:linear-gradient(135deg, #F0F6F5 0%, #E6EFEB 100%);
+    border:1.5px solid #C5DDD8;
+    border-radius:12px;
+    padding:16px 20px;
+    margin-bottom:24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    cursor:pointer;
+    transition:all .2s ease;
+    box-shadow:0 2px 5px rgba(18,59,65,0.05);
+  }
+  .portal-banner-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(18,59,65,0.1);
+    border-color:var(--teal);
+  }
+  .portal-banner-icon{
+    width:42px;
+    height:42px;
+    border-radius:10px;
+    background:#FFFFFF;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    border:1px solid #D5E5E2;
+  }
+  .portal-banner-body{
+    flex:1;
+  }
+  .portal-banner-badge{
+    display:inline-block;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:2px;
+  }
+  .portal-banner-title{
+    font-family:var(--serif);
+    font-size:18px;
+    font-weight:600;
+    color:var(--navy-deep);
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+  }
+  .portal-banner-desc{
+    font-size:12.5px;
+    color:var(--ink);
+    margin:0;
+    line-height:1.45;
+  }
+  .btn-portal-banner{
+    background:var(--navy-deep);
+    color:#FFFFFF;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s ease;
+    flex-shrink:0;
+  }
+  .btn-portal-banner:hover{
+    background:var(--navy);
+  }
+
+  /* CBC Input Guides & Header */
+  .field-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:4px;
+  }
+  .field-top label{
+    margin-bottom:0 !important;
+    font-size:13px;
+    font-weight:600;
+    color:var(--navy);
+  }
+  .unit-pill{
+    font-size:11px;
+    font-weight:700;
+    color:var(--teal);
+    background:var(--teal-soft);
+    padding:2px 7px;
+    border-radius:6px;
+    letter-spacing:0.02em;
+  }
+  .input-guide{
+    font-size:11.5px;
+    color:var(--muted);
+    margin-bottom:6px;
+    font-weight:500;
+    line-height:1.3;
+  }
+
+  /* Screening Record ID Header (Medical Research Document Style) */
+  .screening-record-header{
+    margin-bottom:16px;
+    padding-bottom:12px;
+    border-bottom:1.5px solid var(--line);
+  }
+  .screening-record-header .rec-sub{
+    font-family:var(--sans);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    color:var(--teal);
+    text-transform:uppercase;
+    margin-bottom:3px;
+  }
+  .screening-record-header .rec-id{
+    font-family:"Source Serif 4", "Libre Baskerville", Georgia, "Times New Roman", serif;
+    font-size:22px;
+    font-weight:400;
+    font-optical-sizing:auto;
+    color:var(--navy-deep);
+    letter-spacing:0.005em;
+    line-height:1.25;
+  }
+
+  /* Export Dropdown Menu */
+  .export-dropdown{
+    position:relative;
+    display:inline-block;
+  }
+  .export-menu{
+    position:absolute;
+    right:0;
+    top:calc(100% + 6px);
+    background:#FFFFFF;
+    border:1px solid var(--line);
+    border-radius:10px;
+    box-shadow:0 12px 30px rgba(11,37,41,0.16);
+    min-width:300px;
+    z-index:1000;
+    display:none;
+    overflow:hidden;
+    animation:rise .18s ease;
+  }
+  .export-menu.show{
+    display:block;
+  }
+  .export-menu-item{
+    width:100%;
+    text-align:left;
+    background:transparent;
+    border:none;
+    padding:11px 16px;
+    cursor:pointer;
+    display:block;
+    transition:background .15s ease;
+  }
+  .export-menu-item:hover{
+    background:#F2F6F5;
+  }
+  .export-item-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy-deep);
+    margin-bottom:2px;
+  }
+  .export-item-desc{
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.35;
+  }
+  .export-menu-divider{
+    height:1px;
+    background:var(--line);
+    margin:2px 0;
+  }
+
+  /* Demo & Live Badges */
+  .badge-demo{
+    font-size:9.5px;
+    font-weight:700;
+    background:#EAEFEF;
+    color:var(--muted);
+    padding:2px 6px;
+    border-radius:4px;
+    letter-spacing:0.04em;
+    display:inline-block;
+    vertical-align:1px;
+    margin-left:4px;
+  }
+  .badge-live{
+    font-size:9.5px;
+    font-weight:700;
+    background:var(--green-soft);
+    color:var(--green);
+    padding:2px 6px;
+    border-radius:4px;
+    letter-spacing:0.04em;
+    display:inline-block;
+    vertical-align:1px;
+    margin-left:4px;
+  }
+
   @media print{
     .stepper, .actions, .result-actions, header .dept-tag, .head-actions, .research-nav, .filter-bar, .modal-backdrop, .dash-head, .stats-grid, .section-card, .btn-portal-link, .no-print{ display:none !important; }
     body{ background:#fff; }
@@ -995,43 +1206,58 @@
 
     <!-- SCREEN 1: Patient details -->
     <section class="screen active" id="screen1">
+      <!-- PROMINENT RESEARCHER PORTAL BANNER -->
+      <div class="portal-banner-card" onclick="openLoginScreen()">
+        <div class="portal-banner-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <div class="portal-banner-body">
+          <div class="portal-banner-badge">Authorized Research Access</div>
+          <div class="portal-banner-title">Researcher Portal</div>
+          <p class="portal-banner-desc">Authorized research personnel can access screening history, review patient records, and download research reports.</p>
+        </div>
+        <button type="button" class="btn-portal-banner" onclick="openLoginScreen(); event.stopPropagation();">
+          Enter Portal &rarr;
+        </button>
+      </div>
+
       <h1 class="screen-title">Patient details</h1>
-      <p class="screen-sub">Enter the basic details for this screening record.</p>
+      <p class="screen-sub">Enter patient demographic details to initiate this screening record.</p>
 
       <div class="field" id="f-name">
         <label for="name">Full name</label>
         <input type="text" id="name" placeholder="e.g. Kavya R" autocomplete="name">
-        <div class="err-msg">Enter the patient's name.</div>
+        <div class="err-msg">Please enter this value.</div>
       </div>
 
       <div class="row2">
         <div class="field" id="f-age">
           <label for="age">Age <span class="hint">years</span></label>
           <input type="number" id="age" min="0" max="120" placeholder="e.g. 24">
-          <div class="err-msg">Enter a valid age (0–120).</div>
+          <div class="err-msg">Please enter this value.</div>
         </div>
         <div class="field" id="f-sex">
           <label for="sex">Sex</label>
           <select id="sex">
-            <option value="" disabled selected>Select</option>
+            <option value="" disabled selected>Select sex</option>
             <option value="Female">Female</option>
             <option value="Male">Male</option>
             <option value="Other">Other</option>
           </select>
-          <div class="err-msg">Select a sex.</div>
+          <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
 
       <div class="field" id="f-email">
         <label for="email">Email ID</label>
         <input type="email" id="email" placeholder="name@example.com" autocomplete="email">
-        <div class="err-msg">Enter a valid email address.</div>
+        <div class="err-msg">Please enter this value.</div>
       </div>
 
       <div class="field" id="f-place">
         <label for="place">Place</label>
         <input type="text" id="place" placeholder="e.g. Chennai" autocomplete="address-level2">
-        <div class="err-msg">Enter a place.</div>
+        <div class="err-msg">Please enter this value.</div>
       </div>
 
       <div class="actions">
@@ -1043,44 +1269,68 @@
     <!-- SCREEN 2: CBC input -->
     <section class="screen" id="screen2">
       <h1 class="screen-title">CBC parameters</h1>
-      <p class="screen-sub">Enter the complete blood count values exactly as reported by the automated analyzer.</p>
+      <p class="screen-sub">Enter automated blood analyzer values. Expected input ranges assist in preventing entry errors (plausibility limits, not normal ranges).</p>
 
       <div class="row2">
         <div class="field" id="f-hb">
-          <label for="hb">Hemoglobin (Hb) <span class="hint">g/dL</span></label>
-          <input type="number" step="0.1" id="hb" placeholder="e.g. 10.2">
-          <div class="err-msg">Enter Hb between 3.0 and 25.0 g/dL (must be &gt; 0).</div>
+          <div class="field-top">
+            <label for="hb">Hemoglobin (Hb)</label>
+            <span class="unit-pill">g/dL</span>
+          </div>
+          <div class="input-guide">Expected input: 3–25 &middot; Example: 11.2</div>
+          <input type="number" step="0.1" id="hb" placeholder="e.g. 11.2">
+          <div class="err-msg">Please enter this value.</div>
         </div>
         <div class="field" id="f-rbc">
-          <label for="rbc">RBC count <span class="hint">million/µL</span></label>
+          <div class="field-top">
+            <label for="rbc">RBC count</label>
+            <span class="unit-pill">million/µL</span>
+          </div>
+          <div class="input-guide">Expected input: 1–8 &middot; Example: 5.40</div>
           <input type="number" step="0.01" id="rbc" placeholder="e.g. 5.40">
-          <div class="err-msg">Enter RBC between 1.0 and 9.0 million/µL (must be &gt; 0).</div>
+          <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
 
       <div class="row2">
         <div class="field" id="f-mcv">
-          <label for="mcv">MCV <span class="hint">fL</span></label>
-          <input type="number" step="0.1" id="mcv" placeholder="e.g. 62.5">
-          <div class="err-msg">Enter MCV between 35.0 and 135.0 fL.</div>
+          <div class="field-top">
+            <label for="mcv">MCV</label>
+            <span class="unit-pill">fL</span>
+          </div>
+          <div class="input-guide">Expected input: 40–120 &middot; Example: 72.0</div>
+          <input type="number" step="0.1" id="mcv" placeholder="e.g. 72.0">
+          <div class="err-msg">Please enter this value.</div>
         </div>
         <div class="field" id="f-mch">
-          <label for="mch">MCH <span class="hint">pg</span></label>
-          <input type="number" step="0.1" id="mch" placeholder="e.g. 19.8">
-          <div class="err-msg">Enter MCH between 10.0 and 50.0 pg.</div>
+          <div class="field-top">
+            <label for="mch">MCH</label>
+            <span class="unit-pill">pg</span>
+          </div>
+          <div class="input-guide">Expected input: 10–40 &middot; Example: 20.5</div>
+          <input type="number" step="0.1" id="mch" placeholder="e.g. 20.5">
+          <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
 
       <div class="row2">
         <div class="field" id="f-rdw">
-          <label for="rdw">RDW-CV <span class="hint">%</span></label>
+          <div class="field-top">
+            <label for="rdw">RDW-CV</label>
+            <span class="unit-pill">%</span>
+          </div>
+          <div class="input-guide">Expected input: 5–40 &middot; Example: 15.4</div>
           <input type="number" step="0.1" id="rdw" placeholder="e.g. 15.4">
-          <div class="err-msg">Enter RDW between 8.0 and 35.0%.</div>
+          <div class="err-msg">Please enter this value.</div>
         </div>
         <div class="field" id="f-hct">
-          <label for="hct">Hematocrit (HCT / PCV) <span class="hint">%</span></label>
+          <div class="field-top">
+            <label for="hct">Hematocrit (HCT / PCV)</label>
+            <span class="unit-pill">%</span>
+          </div>
+          <div class="input-guide">Expected input: 10–75 &middot; Example: 34.5</div>
           <input type="number" step="0.1" id="hct" placeholder="e.g. 34.5">
-          <div class="err-msg">Enter HCT between 10.0 and 70.0%.</div>
+          <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
 
@@ -1092,6 +1342,12 @@
 
     <!-- SCREEN 3: Results -->
     <section class="screen" id="screen3">
+      <!-- SCREENING RECORD HEADER (Dignified Medical Document Style) -->
+      <div class="screening-record-header" id="screen3RecordHeader" style="display:none;">
+        <div class="rec-sub">SCREENING RECORD</div>
+        <div class="rec-id" id="screen3RecordId">TC-2026-0045 &middot; REF-9124</div>
+      </div>
+
       <div class="patient-strip" id="patientStrip"></div>
       <div class="cbc-strip" id="cbcStrip"></div>
 
@@ -1219,10 +1475,27 @@
         </div>
         <div class="dash-quick-actions">
           <button class="btn-secondary btn-sm" onclick="navToScreening()">+ New Screening</button>
-          <button class="btn-secondary btn-sm" onclick="exportHistoryCSV()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px; margin-right:3px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Export History (CSV)
-          </button>
+          <div class="export-dropdown">
+            <button type="button" class="btn-secondary btn-sm" onclick="toggleExportMenu('dashExportMenu', event)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Research Data &#x25BE;
+            </button>
+            <div class="export-menu" id="dashExportMenu">
+              <button type="button" class="export-menu-item" onclick="exportPatientSummaryCSV(); closeAllExportMenus();">
+                <div class="export-item-title">&#x1F4C4; Patient Summary CSV</div>
+                <div class="export-item-desc">One row per screening record with demographics, CBC parameters, and final classifications.</div>
+              </button>
+              <button type="button" class="export-menu-item" onclick="exportDetailedIndicesCSV(); closeAllExportMenus();">
+                <div class="export-item-title">&#x1F4CA; Detailed Index CSV</div>
+                <div class="export-item-desc">One row per discriminant index calculation (formulas, cutoffs, weights, votes, and Logit probability).</div>
+              </button>
+              <div class="export-menu-divider"></div>
+              <button type="button" class="export-menu-item" onclick="exportMultiSheetExcel(); closeAllExportMenus();">
+                <div class="export-item-title" style="color:var(--teal);">&#x1F4D1; Download Excel (.xls)</div>
+                <div class="export-item-desc">Complete multi-sheet workbook: Sheet 1 (Patient Summary) &amp; Sheet 2 (Detailed Index Results).</div>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1302,10 +1575,27 @@
           <p class="screen-sub" style="margin-bottom:0;">Archived 11-index screening records, discriminant scores, and exported reports.</p>
         </div>
         <div class="dash-quick-actions">
-          <button class="btn-secondary btn-sm" onclick="exportHistoryCSV()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px; margin-right:3px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Export History
-          </button>
+          <div class="export-dropdown">
+            <button type="button" class="btn-secondary btn-sm" onclick="toggleExportMenu('historyExportMenu', event)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Research Data &#x25BE;
+            </button>
+            <div class="export-menu" id="historyExportMenu">
+              <button type="button" class="export-menu-item" onclick="exportPatientSummaryCSV(); closeAllExportMenus();">
+                <div class="export-item-title">&#x1F4C4; Patient Summary CSV</div>
+                <div class="export-item-desc">One row per screening record with demographics, CBC parameters, and final classifications.</div>
+              </button>
+              <button type="button" class="export-menu-item" onclick="exportDetailedIndicesCSV(); closeAllExportMenus();">
+                <div class="export-item-title">&#x1F4CA; Detailed Index CSV</div>
+                <div class="export-item-desc">One row per discriminant index calculation (formulas, cutoffs, weights, votes, and Logit probability).</div>
+              </button>
+              <div class="export-menu-divider"></div>
+              <button type="button" class="export-menu-item" onclick="exportMultiSheetExcel(); closeAllExportMenus();">
+                <div class="export-item-title" style="color:var(--teal);">&#x1F4D1; Download Excel (.xls)</div>
+                <div class="export-item-desc">Complete multi-sheet workbook: Sheet 1 (Patient Summary) &amp; Sheet 2 (Detailed Index Results).</div>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1359,9 +1649,9 @@
   <div class="modal-backdrop" id="recordModalBackdrop" onclick="handleModalBackdropClick(event)">
     <div class="modal-card">
       <div class="modal-header">
-        <div>
-          <div style="font-size:11px; font-weight:700; color:var(--teal); text-transform:uppercase; letter-spacing:0.04em;">Screening Record</div>
-          <h2 class="modal-title" id="modalRecordId">TC-2026-0042</h2>
+        <div class="screening-record-header" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
+          <div class="rec-sub">SCREENING RECORD</div>
+          <div class="rec-id" id="modalRecordId">TC-2026-0042 &middot; REF-8495</div>
         </div>
         <button class="btn-close-modal" onclick="closeRecordModal()" aria-label="Close modal">&times;</button>
       </div>
@@ -1456,22 +1746,32 @@
 
     const badName = name.length === 0;
     markInvalid('f-name', badName);
+    const errName = document.querySelector('#f-name .err-msg');
+    if(errName) errName.textContent = 'Please enter this value.';
     if(badName) ok = false;
 
     const badAge = !(age !== '' && !isNaN(age) && Number(age) >= 0 && Number(age) <= 120);
     markInvalid('f-age', badAge);
+    const errAge = document.querySelector('#f-age .err-msg');
+    if(errAge) errAge.textContent = (age === '') ? 'Please enter this value.' : 'Please enter a valid age (0–120 years).';
     if(badAge) ok = false;
 
-    const badSex = !sex;
+    const badSex = !sex || sex === '';
     markInvalid('f-sex', badSex);
+    const errSex = document.querySelector('#f-sex .err-msg');
+    if(errSex) errSex.textContent = 'Please enter this value.';
     if(badSex) ok = false;
 
     const badEmail = !emailRe.test(email);
     markInvalid('f-email', badEmail);
+    const errEmail = document.querySelector('#f-email .err-msg');
+    if(errEmail) errEmail.textContent = (email.length === 0) ? 'Please enter this value.' : 'Please enter a valid email address.';
     if(badEmail) ok = false;
 
     const badPlace = place.length === 0;
     markInvalid('f-place', badPlace);
+    const errPlace = document.querySelector('#f-place .err-msg');
+    if(errPlace) errPlace.textContent = 'Please enter this value.';
     if(badPlace) ok = false;
 
     if(ok){
@@ -1492,18 +1792,19 @@
 
   // ========================================================
   // SCREEN 2 VALIDATION (CBC Parameters)
-  // Validates: Hb, RBC, MCV, MCH, RDW, HCT
-  // Ensures numeric, within physiological limits, prevents division by zero
+  // Input/plausibility ranges to prevent entry errors:
+  // Hb 3–25 g/dL, RBC 1–8 M/µL, MCV 40–120 fL,
+  // MCH 10–40 pg, RDW 5–40 %, HCT 10–75 %
   // ========================================================
   function validateScreen2(){
     let ok = true;
     const ranges = {
-      hb:  { min: 3.0,  max: 25.0, divZeroGuard: true },
-      rbc: { min: 1.0,  max: 9.0,  divZeroGuard: true },
-      mcv: { min: 35.0, max: 135.0 },
-      mch: { min: 10.0, max: 50.0 },
-      rdw: { min: 8.0,  max: 35.0 },
-      hct: { min: 10.0, max: 70.0 }
+      hb:  { min: 3.0,  max: 25.0, divZeroGuard: true, name: 'Hemoglobin (Hb)', unit: 'g/dL' },
+      rbc: { min: 1.0,  max: 8.0,  divZeroGuard: true, name: 'RBC count', unit: 'million/µL' },
+      mcv: { min: 40.0, max: 120.0, name: 'MCV', unit: 'fL' },
+      mch: { min: 10.0, max: 40.0, name: 'MCH', unit: 'pg' },
+      rdw: { min: 5.0,  max: 40.0, name: 'RDW-CV', unit: '%' },
+      hct: { min: 10.0, max: 75.0, name: 'Hematocrit (HCT / PCV)', unit: '%' }
     };
 
     const values = {};
@@ -1512,7 +1813,17 @@
       const raw = el ? el.value.trim() : '';
       const v = parseFloat(raw);
       const conf = ranges[key];
-      const bad = raw === '' || isNaN(v) || !isFinite(v) || v < conf.min || v > conf.max || (conf.divZeroGuard && v <= 0);
+      const fieldEl = document.getElementById('f-' + key);
+      const errEl = fieldEl ? fieldEl.querySelector('.err-msg') : null;
+
+      let bad = false;
+      if(raw === ''){
+        bad = true;
+        if(errEl) errEl.textContent = 'Please enter this value.';
+      } else if(isNaN(v) || !isFinite(v) || v < conf.min || v > conf.max || (conf.divZeroGuard && v <= 0)){
+        bad = true;
+        if(errEl) errEl.textContent = `Please enter a valid value between ${conf.min} and ${conf.max} ${conf.unit}.`;
+      }
 
       markInvalid('f-' + key, bad);
       if(bad) ok = false;
@@ -1809,13 +2120,26 @@
     const weightedResult = calculateWeightedResult(indexResults);
 
     // Automatically archive this screening into research history
-    ResearchDataStore.addScreening(patient, patient.cbc, indexResults, weightedResult);
+    const newRecord = ResearchDataStore.addScreening(patient, patient.cbc, indexResults, weightedResult);
 
-    renderResults(indexResults, weightedResult);
+    renderResults(indexResults, weightedResult, newRecord);
     showScreen('screen3', 3);
   }
 
-  function renderResults(indexResults, wr){
+  function renderResults(indexResults, wr, record){
+    // Update Screening Record ID Header
+    const recHeader = document.getElementById('screen3RecordHeader');
+    const recIdSpan = document.getElementById('screen3RecordId');
+    if (recHeader && recIdSpan) {
+      if (record && record.id) {
+        const demoBadge = record.isDemo ? '<span class="badge-demo">DEMO DATA</span>' : '<span class="badge-live">LIVE</span>';
+        recIdSpan.innerHTML = `${escapeHtml(record.id)} &middot; ${escapeHtml(record.patientRef || '')} ${demoBadge}`;
+        recHeader.style.display = 'block';
+      } else {
+        recHeader.style.display = 'none';
+      }
+    }
+
     // 1. Patient Strip
     const p = patient;
     document.getElementById('patientStrip').innerHTML =
@@ -1910,6 +2234,8 @@
       if(!f.id.startsWith('f-login')) f.classList.remove('invalid');
     });
     patient = {};
+    const recHeader = document.getElementById('screen3RecordHeader');
+    if (recHeader) recHeader.style.display = 'none';
     showScreen('screen1', 1);
   }
 
@@ -1925,14 +2251,15 @@
   // The database will be designed later (no Postgres/Mongo/Firebase).
   // ========================================================
   const ResearchDataStore = {
-    STORAGE_KEY: 'thalcheck_research_screenings_v1',
+    STORAGE_KEY: 'thalcheck_research_screenings_v2',
 
     getSeedData: function(){
       const rawSeeds = [
         {
           id: 'TC-2026-0038',
-          patientRef: 'REF-8491',
+          patientRef: 'DEMO-8491',
           timestamp: '08 Sep 2026, 09:30',
+          isDemo: true,
           patient: {
             name: 'Kavya Ramesh',
             age: 24,
@@ -1944,8 +2271,9 @@
         },
         {
           id: 'TC-2026-0039',
-          patientRef: 'REF-8492',
+          patientRef: 'DEMO-8492',
           timestamp: '08 Sep 2026, 11:15',
+          isDemo: true,
           patient: {
             name: 'Arun Kumar',
             age: 36,
@@ -1957,8 +2285,9 @@
         },
         {
           id: 'TC-2026-0040',
-          patientRef: 'REF-8493',
+          patientRef: 'DEMO-8493',
           timestamp: '08 Sep 2026, 14:40',
+          isDemo: true,
           patient: {
             name: 'Deepa Narayanan',
             age: 29,
@@ -1970,8 +2299,9 @@
         },
         {
           id: 'TC-2026-0041',
-          patientRef: 'REF-8494',
+          patientRef: 'DEMO-8494',
           timestamp: '09 Sep 2026, 10:05',
+          isDemo: true,
           patient: {
             name: 'Mohammed Tariq',
             age: 22,
@@ -1983,8 +2313,9 @@
         },
         {
           id: 'TC-2026-0042',
-          patientRef: 'REF-8495',
+          patientRef: 'DEMO-8495',
           timestamp: '09 Sep 2026, 15:20',
+          isDemo: true,
           patient: {
             name: 'Lakshmi Priya',
             age: 41,
@@ -1996,8 +2327,9 @@
         },
         {
           id: 'TC-2026-0043',
-          patientRef: 'REF-8496',
+          patientRef: 'DEMO-8496',
           timestamp: '10 Sep 2026, 11:50',
+          isDemo: true,
           patient: {
             name: 'Suresh Balaji',
             age: 33,
@@ -2009,8 +2341,9 @@
         },
         {
           id: 'TC-2026-0044',
-          patientRef: 'REF-8497',
+          patientRef: 'DEMO-8497',
           timestamp: '10 Sep 2026, 16:10',
+          isDemo: true,
           patient: {
             name: 'Ananya Sundaram',
             age: 19,
@@ -2030,6 +2363,7 @@
           id: s.id,
           patientRef: s.patientRef,
           timestamp: s.timestamp,
+          isDemo: true,
           patient: s.patient,
           cbc: s.cbc,
           indexResults: indexResults,
@@ -2082,6 +2416,7 @@
         id: id,
         patientRef: patientRef,
         timestamp: timeFormatted,
+        isDemo: false,
         patient: JSON.parse(JSON.stringify(patientData)),
         cbc: JSON.parse(JSON.stringify(cbcData)),
         indexResults: JSON.parse(JSON.stringify(indexResults)),
@@ -2338,18 +2673,19 @@
 
     stats.recent.forEach(r => {
       const tr = document.createElement('tr');
-      const cls = r.weightedResult?.classification || 'Unknown';
+      const cls = r.weightedResult?.classification || 'Indeterminate';
       let pillClass = 'mixed';
       if (cls === 'Likely Thalassemia Trait') pillClass = 'thal';
       else if (cls === 'Likely IDA') pillClass = 'ida';
 
       const thalPct = r.weightedResult?.thalPercent != null ? r.weightedResult.thalPercent.toFixed(1) + '%' : '—';
+      const demoBadge = r.isDemo ? '<span class="badge-demo">DEMO DATA</span>' : '<span class="badge-live">LIVE</span>';
 
       tr.innerHTML = `
-        <td><strong style="color:var(--navy-deep);">${escapeHtml(r.id)}</strong></td>
+        <td><strong style="color:var(--navy-deep);">${escapeHtml(r.id)}</strong> ${demoBadge}</td>
         <td>
-          <div style="font-weight:600;">${escapeHtml(r.patient?.name || 'Anonymous')}</div>
-          <div style="font-size:11px; color:var(--muted);">${escapeHtml(r.patientRef || '')} · ${r.patient?.age || ''}y/${r.patient?.sex || ''}</div>
+          <div style="font-weight:600;">${escapeHtml(r.patient?.name || (r.isDemo ? 'Demo Patient' : 'Patient'))}</div>
+          <div style="font-size:11px; color:var(--muted);">${escapeHtml(r.patientRef || '')} · ${r.patient?.age != null ? r.patient.age : ''}y/${escapeHtml(r.patient?.sex || '')}</div>
         </td>
         <td style="color:var(--muted); white-space:nowrap;">${escapeHtml(r.timestamp)}</td>
         <td style="font-weight:700; font-variant-numeric:tabular-nums;">${thalPct}</td>
@@ -2406,18 +2742,19 @@
 
     filtered.forEach(r => {
       const tr = document.createElement('tr');
-      const cls = r.weightedResult?.classification || 'Unknown';
+      const cls = r.weightedResult?.classification || 'Indeterminate';
       let pillClass = 'mixed';
       if (cls === 'Likely Thalassemia Trait') pillClass = 'thal';
       else if (cls === 'Likely IDA') pillClass = 'ida';
 
       const thalPct = r.weightedResult?.thalPercent != null ? r.weightedResult.thalPercent.toFixed(1) + '%' : '—';
+      const demoBadge = r.isDemo ? '<span class="badge-demo">DEMO DATA</span>' : '<span class="badge-live">LIVE</span>';
 
       tr.innerHTML = `
-        <td><strong style="color:var(--navy-deep);">${escapeHtml(r.id)}</strong></td>
+        <td><strong style="color:var(--navy-deep);">${escapeHtml(r.id)}</strong> ${demoBadge}</td>
         <td>
-          <div style="font-weight:600;">${escapeHtml(r.patient?.name || 'Anonymous')}</div>
-          <div style="font-size:11px; color:var(--muted);">${escapeHtml(r.patientRef || '')} · ${r.patient?.age || ''}y/${r.patient?.sex || ''} · ${escapeHtml(r.patient?.place || '')}</div>
+          <div style="font-weight:600;">${escapeHtml(r.patient?.name || (r.isDemo ? 'Demo Patient' : 'Patient'))}</div>
+          <div style="font-size:11px; color:var(--muted);">${escapeHtml(r.patientRef || '')} · ${r.patient?.age != null ? r.patient.age : ''}y/${escapeHtml(r.patient?.sex || '')} · ${escapeHtml(r.patient?.place || '')}</div>
         </td>
         <td style="color:var(--muted); white-space:nowrap;">${escapeHtml(r.timestamp)}</td>
         <td style="font-weight:700; font-variant-numeric:tabular-nums;">${thalPct}</td>
@@ -2454,7 +2791,8 @@
     if (!record) return;
 
     activeModalRecordId = recordId;
-    document.getElementById('modalRecordId').textContent = `${record.id} · ${record.patientRef || ''}`;
+    const demoBadge = record.isDemo ? '<span class="badge-demo">DEMO DATA</span>' : '<span class="badge-live">LIVE</span>';
+    document.getElementById('modalRecordId').innerHTML = `${escapeHtml(record.id)} &middot; ${escapeHtml(record.patientRef || '')} ${demoBadge}`;
 
     const content = document.getElementById('modalRecordContent');
     content.innerHTML = buildRecordViewHtml(record);
@@ -2497,6 +2835,7 @@
 
     const thalPercent = wr.thalPercent != null ? wr.thalPercent.toFixed(2) : '0.00';
     const idaPercent = wr.idaPercent != null ? wr.idaPercent.toFixed(2) : '0.00';
+    const demoBadge = r.isDemo ? '<span class="badge-demo">DEMO DATA</span>' : '<span class="badge-live">LIVE</span>';
 
     let tableRows = '';
     indices.forEach(idx => {
@@ -2521,12 +2860,12 @@
 
     return `
       <div class="patient-strip">
-        <span><b>${escapeHtml(p.name || 'Anonymous')}</b></span>
-        <span>${p.age || '—'} yrs, ${escapeHtml(p.sex || '—')}</span>
+        <span><b>${escapeHtml(p.name || (r.isDemo ? 'Demo Patient' : 'Patient'))}</b></span>
+        <span>${p.age != null ? p.age : '—'} yrs, ${escapeHtml(p.sex || '—')}</span>
         <span>${escapeHtml(p.place || '—')}</span>
         <span>${escapeHtml(p.email || '—')}</span>
         <span><b>Screened:</b> ${escapeHtml(r.timestamp || '—')}</span>
-        <span><b>Ref:</b> ${escapeHtml(r.patientRef || '—')}</span>
+        <span><b>Ref:</b> ${escapeHtml(r.patientRef || '—')} ${demoBadge}</span>
       </div>
 
       <div class="cbc-strip">
@@ -2610,7 +2949,7 @@
     patient.cbc = JSON.parse(JSON.stringify(record.cbc));
 
     // Render results in screen3
-    renderResults(record.indexResults, record.weightedResult);
+    renderResults(record.indexResults, record.weightedResult, record);
 
     // Close modal if open
     closeRecordModal();
@@ -2624,9 +2963,53 @@
   }
 
   // ========================================================
-  // EXPORT COMPLETE HISTORY (CSV / EXCEL COMPATIBLE)
+  // EXPORT UTILITIES & RESEARCH EXPORTS
+  // A. Patient Summary CSV
+  // B. Detailed Index CSV
+  // C. Multi-Sheet Excel Workbook (.xls SpreadsheetML)
   // ========================================================
-  function exportHistoryCSV(){
+  function toggleExportMenu(menuId, e){
+    if (e && e.stopPropagation) e.stopPropagation();
+    const menu = document.getElementById(menuId);
+    if (!menu) return;
+    const isShown = menu.classList.contains('show');
+    closeAllExportMenus();
+    if (!isShown) {
+      menu.classList.add('show');
+    }
+  }
+
+  function closeAllExportMenus(){
+    document.querySelectorAll('.export-menu').forEach(m => m.classList.remove('show'));
+  }
+
+  document.addEventListener('click', () => {
+    closeAllExportMenus();
+  });
+
+  function downloadExportBlob(content, filename, mimeType){
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  const csvFormatCell = (val) => {
+    if (val === null || val === undefined) return '""';
+    const str = String(val).replace(/"/g, '""');
+    return `"${str}"`;
+  };
+
+  const csvRow = (arr) => arr.map(csvFormatCell).join(',');
+
+  // A. PATIENT SUMMARY CSV
+  // One row per screening record
+  function exportPatientSummaryCSV(){
     const records = ResearchDataStore.getScreenings();
     if (!records || records.length === 0) {
       alert('No screening records available to export.');
@@ -2635,137 +3018,247 @@
 
     const headers = [
       'Screening ID',
-      'Patient Reference',
-      'Patient Name',
+      'Patient/Reference ID',
       'Age',
       'Sex',
-      'Place',
-      'Email',
-      'Screening Timestamp',
+      'Date',
       'Hb (g/dL)',
-      'RBC (M/uL)',
+      'RBC (million/µL)',
       'MCV (fL)',
       'MCH (pg)',
       'RDW (%)',
-      'HCT (%)',
-      'England & Fraser (Val)',
-      'England & Fraser (Vote)',
-      'Green & King (Val)',
-      'Green & King (Vote)',
-      'Mentzer (Val)',
-      'Mentzer (Vote)',
-      'Shine & Lal (Val)',
-      'Shine & Lal (Vote)',
-      'Ricerca (Val)',
-      'Ricerca (Vote)',
-      'Srivastava (Val)',
-      'Srivastava (Vote)',
-      'Ehsani (Val)',
-      'Ehsani (Vote)',
-      'Sirdah (Val)',
-      'Sirdah (Vote)',
-      'Bordbar (Val)',
-      'Bordbar (Vote)',
-      'RDW Index (Val)',
-      'RDW Index (Vote)',
-      'Logit Model (Prob %)',
-      'Logit Model (Vote)',
-      'THAL Weighted Score (pts)',
-      'THAL Weighted Score (%)',
-      'IDA Weighted Score (pts)',
-      'IDA Weighted Score (%)',
-      'Total Weight',
-      'Final Screening Result',
-      'Actionable Recommendation'
+      'HCT/PCV (%)',
+      'THAL Weighted Score',
+      'IDA Weighted Score',
+      'THAL Screening %',
+      'IDA Screening %',
+      'Final Result',
+      'Recommendation'
     ];
-
-    const csvRow = (arr) => arr.map(val => {
-      if (val === null || val === undefined) return '""';
-      const str = String(val).replace(/"/g, '""');
-      return `"${str}"`;
-    }).join(',');
 
     const rows = [csvRow(headers)];
 
     records.forEach(r => {
-      const idxMap = {};
-      if (Array.isArray(r.indexResults)) {
-        r.indexResults.forEach(idx => {
-          idxMap[idx.id] = idx;
-        });
-      }
-
-      const ef = idxMap.englandFraser || {};
-      const gk = idxMap.greenKing || {};
-      const mz = idxMap.mentzer || {};
-      const sl = idxMap.shineLal || {};
-      const rc = idxMap.ricerca || {};
-      const sr = idxMap.srivastava || {};
-      const eh = idxMap.ehsani || {};
-      const sd = idxMap.sirdah || {};
-      const bb = idxMap.bordbar || {};
-      const ri = idxMap.rdwIndex || {};
-      const lg = idxMap.logit || {};
+      const c = r.cbc || {};
+      const wr = r.weightedResult || {};
+      const p = r.patient || {};
 
       const row = [
         r.id,
         r.patientRef || r.id,
-        r.patient?.name || '',
-        r.patient?.age ?? '',
-        r.patient?.sex || '',
-        r.patient?.place || '',
-        r.patient?.email || '',
+        p.age != null ? p.age : '',
+        p.sex || '',
         r.timestamp || '',
-        r.cbc?.hb ?? '',
-        r.cbc?.rbc ?? '',
-        r.cbc?.mcv ?? '',
-        r.cbc?.mch ?? '',
-        r.cbc?.rdw ?? '',
-        r.cbc?.hct ?? '',
-        typeof ef.value === 'number' ? ef.value.toFixed(2) : '',
-        ef.vote || '',
-        typeof gk.value === 'number' ? gk.value.toFixed(2) : '',
-        gk.vote || '',
-        typeof mz.value === 'number' ? mz.value.toFixed(2) : '',
-        mz.vote || '',
-        typeof sl.value === 'number' ? sl.value.toFixed(2) : '',
-        sl.vote || '',
-        typeof rc.value === 'number' ? rc.value.toFixed(2) : '',
-        rc.vote || '',
-        typeof sr.value === 'number' ? sr.value.toFixed(2) : '',
-        sr.vote || '',
-        typeof eh.value === 'number' ? eh.value.toFixed(2) : '',
-        eh.vote || '',
-        typeof sd.value === 'number' ? sd.value.toFixed(2) : '',
-        sd.vote || '',
-        typeof bb.value === 'number' ? bb.value.toFixed(2) : '',
-        bb.vote || '',
-        typeof ri.value === 'number' ? ri.value.toFixed(2) : '',
-        ri.vote || '',
-        typeof lg.probability === 'number' ? (lg.probability * 100).toFixed(2) + '%' : '',
-        lg.vote || '',
-        r.weightedResult?.thalWeightedScore ?? '',
-        r.weightedResult?.thalPercent != null ? r.weightedResult.thalPercent.toFixed(2) + '%' : '',
-        r.weightedResult?.idaWeightedScore ?? '',
-        r.weightedResult?.idaPercent != null ? r.weightedResult.idaPercent.toFixed(2) + '%' : '',
-        r.weightedResult?.totalWeight ?? 19,
-        r.weightedResult?.classification || '',
-        r.weightedResult?.recommendation || ''
+        c.hb != null ? c.hb : '',
+        c.rbc != null ? c.rbc : '',
+        c.mcv != null ? c.mcv : '',
+        c.mch != null ? c.mch : '',
+        c.rdw != null ? c.rdw : '',
+        c.hct != null ? c.hct : '',
+        wr.thalWeightedScore != null ? wr.thalWeightedScore : 0,
+        wr.idaWeightedScore != null ? wr.idaWeightedScore : 0,
+        wr.thalPercent != null ? wr.thalPercent.toFixed(2) + '%' : '0.00%',
+        wr.idaPercent != null ? wr.idaPercent.toFixed(2) + '%' : '0.00%',
+        wr.classification || '',
+        wr.recommendation || ''
       ];
       rows.push(csvRow(row));
     });
 
     const csvContent = '\uFEFF' + rows.join('\r\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
     const dateStr = new Date().toISOString().slice(0, 10);
-    a.download = `ThalCheck_Screening_History_${dateStr}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    downloadExportBlob(csvContent, `ThalCheck_Patient_Summary_${dateStr}.csv`, 'text/csv;charset=utf-8;');
+  }
+
+  // B. DETAILED INDEX CSV
+  // One row per index result
+  function exportDetailedIndicesCSV(){
+    const records = ResearchDataStore.getScreenings();
+    if (!records || records.length === 0) {
+      alert('No screening records available to export.');
+      return;
+    }
+
+    const headers = [
+      'Screening ID',
+      'Patient/Reference ID',
+      'Date',
+      'Index Name',
+      'Calculated Value',
+      'Cutoff',
+      'Vote',
+      'Weight',
+      'Logit Value',
+      'Thalassemia Probability'
+    ];
+
+    const rows = [csvRow(headers)];
+
+    records.forEach(r => {
+      const indices = r.indexResults || [];
+      indices.forEach(idx => {
+        const isLogit = idx.id === 'logit';
+        const calcVal = isLogit ? (idx.displayValue || '') : (typeof idx.value === 'number' ? idx.value.toFixed(2) : (idx.displayValue || ''));
+        const logitVal = (isLogit && typeof idx.value === 'number') ? idx.value.toFixed(4) : '—';
+        const probVal = (isLogit && typeof idx.probability === 'number') ? (idx.probability * 100).toFixed(2) + '%' : '—';
+
+        const row = [
+          r.id,
+          r.patientRef || r.id,
+          r.timestamp || '',
+          idx.name || '',
+          calcVal,
+          idx.cutoff || '',
+          idx.vote || '',
+          idx.weight != null ? idx.weight : '',
+          logitVal,
+          probVal
+        ];
+        rows.push(csvRow(row));
+      });
+    });
+
+    const csvContent = '\uFEFF' + rows.join('\r\n');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    downloadExportBlob(csvContent, `ThalCheck_Detailed_Indices_${dateStr}.csv`, 'text/csv;charset=utf-8;');
+  }
+
+  // C. MULTI-SHEET EXCEL WORKBOOK (.xls SpreadsheetML)
+  // Sheet 1: Patient Summary
+  // Sheet 2: Detailed Index Results
+  function exportMultiSheetExcel(){
+    const records = ResearchDataStore.getScreenings();
+    if (!records || records.length === 0) {
+      alert('No screening records available to export.');
+      return;
+    }
+
+    function xmlCell(val, isHeader = false, isNumeric = false){
+      const safeVal = String(val == null ? '' : val)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+
+      if (isHeader) {
+        return `<Cell ss:StyleID="Header"><Data ss:Type="String">${safeVal}</Data></Cell>`;
+      }
+      if (isNumeric && typeof val === 'number' && isFinite(val)) {
+        return `<Cell><Data ss:Type="Number">${val}</Data></Cell>`;
+      }
+      return `<Cell><Data ss:Type="String">${safeVal}</Data></Cell>`;
+    }
+
+    function xmlRow(cells, isHeader = false){
+      return `<Row>${cells.map(c => typeof c === 'object' ? xmlCell(c.val, isHeader, c.num) : xmlCell(c, isHeader)).join('')}</Row>`;
+    }
+
+    // Sheet 1: Patient Summary
+    const sumHeaders = [
+      'Screening ID', 'Patient/Reference ID', 'Age', 'Sex', 'Date',
+      'Hb (g/dL)', 'RBC (million/µL)', 'MCV (fL)', 'MCH (pg)', 'RDW (%)', 'HCT/PCV (%)',
+      'THAL Weighted Score', 'IDA Weighted Score', 'THAL Screening %', 'IDA Screening %',
+      'Final Result', 'Recommendation'
+    ];
+    let sheet1Rows = xmlRow(sumHeaders, true);
+
+    records.forEach(r => {
+      const c = r.cbc || {};
+      const wr = r.weightedResult || {};
+      const p = r.patient || {};
+      sheet1Rows += xmlRow([
+        r.id,
+        r.patientRef || r.id,
+        { val: p.age, num: true },
+        p.sex || '',
+        r.timestamp || '',
+        { val: c.hb, num: true },
+        { val: c.rbc, num: true },
+        { val: c.mcv, num: true },
+        { val: c.mch, num: true },
+        { val: c.rdw, num: true },
+        { val: c.hct, num: true },
+        { val: wr.thalWeightedScore, num: true },
+        { val: wr.idaWeightedScore, num: true },
+        wr.thalPercent != null ? wr.thalPercent.toFixed(2) + '%' : '0.00%',
+        wr.idaPercent != null ? wr.idaPercent.toFixed(2) + '%' : '0.00%',
+        wr.classification || '',
+        wr.recommendation || ''
+      ]);
+    });
+
+    // Sheet 2: Detailed Index Results
+    const idxHeaders = [
+      'Screening ID', 'Patient/Reference ID', 'Date', 'Index Name',
+      'Calculated Value', 'Cutoff', 'Vote', 'Weight', 'Logit Value', 'Thalassemia Probability'
+    ];
+    let sheet2Rows = xmlRow(idxHeaders, true);
+
+    records.forEach(r => {
+      const indices = r.indexResults || [];
+      indices.forEach(idx => {
+        const isLogit = idx.id === 'logit';
+        const calcVal = isLogit ? (idx.displayValue || '') : (typeof idx.value === 'number' ? idx.value.toFixed(2) : (idx.displayValue || ''));
+        const logitVal = (isLogit && typeof idx.value === 'number') ? idx.value.toFixed(4) : '—';
+        const probVal = (isLogit && typeof idx.probability === 'number') ? (idx.probability * 100).toFixed(2) + '%' : '—';
+
+        sheet2Rows += xmlRow([
+          r.id,
+          r.patientRef || r.id,
+          r.timestamp || '',
+          idx.name || '',
+          calcVal,
+          idx.cutoff || '',
+          idx.vote || '',
+          { val: idx.weight, num: true },
+          logitVal,
+          probVal
+        ]);
+      });
+    });
+
+    const excelXml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="Segoe UI" ss:Size="10" ss:Color="#122024"/>
+  </Style>
+  <Style ss:ID="Header">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#0B2529"/>
+   </Borders>
+   <Font ss:FontName="Segoe UI" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#123B41" ss:Pattern="Solid"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Patient Summary">
+  <Table>
+   ${sheet1Rows}
+  </Table>
+ </Worksheet>
+ <Worksheet ss:Name="Detailed Index Results">
+  <Table>
+   ${sheet2Rows}
+  </Table>
+ </Worksheet>
+</Workbook>`;
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    downloadExportBlob(excelXml, `ThalCheck_Research_Cohort_${dateStr}.xls`, 'application/vnd.ms-excel;charset=utf-8');
+  }
+
+  // Alias for backward compatibility
+  function exportHistoryCSV(){
+    exportPatientSummaryCSV();
   }
 
   // ========================================================
