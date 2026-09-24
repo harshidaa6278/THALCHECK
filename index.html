@@ -1027,12 +1027,17 @@
     border-radius:6px;
     letter-spacing:0.02em;
   }
-  .input-guide{
+  .allowed-range{
+    display:block !important;
     font-size:11.5px;
     color:var(--muted);
-    margin-bottom:6px;
+    margin-top:5px;
     font-weight:500;
     line-height:1.3;
+  }
+  .allowed-range .range-tag{
+    font-weight:600;
+    color:var(--navy);
   }
 
   /* Screening Record ID Header (Medical Research Document Style) */
@@ -1269,7 +1274,7 @@
     <!-- SCREEN 2: CBC input -->
     <section class="screen" id="screen2">
       <h1 class="screen-title">CBC parameters</h1>
-      <p class="screen-sub">Enter automated blood analyzer values. Expected input ranges assist in preventing entry errors (plausibility limits, not normal ranges).</p>
+      <p class="screen-sub">Enter automated blood analyzer values. Allowed input ranges assist in preventing entry errors (broad plausibility limits for prototype screening).</p>
 
       <div class="row2">
         <div class="field" id="f-hb">
@@ -1277,8 +1282,8 @@
             <label for="hb">Hemoglobin (Hb)</label>
             <span class="unit-pill">g/dL</span>
           </div>
-          <div class="input-guide">Expected input: 3–25 &middot; Example: 11.2</div>
-          <input type="number" step="0.1" id="hb" placeholder="e.g. 11.2">
+          <input type="number" step="any" min="3" max="25" id="hb" placeholder="e.g. 11.2" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 3–25 g/dL | Example: 11.2</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
         <div class="field" id="f-rbc">
@@ -1286,8 +1291,8 @@
             <label for="rbc">RBC count</label>
             <span class="unit-pill">million/µL</span>
           </div>
-          <div class="input-guide">Expected input: 1–8 &middot; Example: 5.40</div>
-          <input type="number" step="0.01" id="rbc" placeholder="e.g. 5.40">
+          <input type="number" step="any" min="1" max="8" id="rbc" placeholder="e.g. 5.40" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 1–8 million/µL | Example: 5.40</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
@@ -1298,8 +1303,8 @@
             <label for="mcv">MCV</label>
             <span class="unit-pill">fL</span>
           </div>
-          <div class="input-guide">Expected input: 40–120 &middot; Example: 72.0</div>
-          <input type="number" step="0.1" id="mcv" placeholder="e.g. 72.0">
+          <input type="number" step="any" min="40" max="120" id="mcv" placeholder="e.g. 72.0" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 40–120 fL | Example: 72.0</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
         <div class="field" id="f-mch">
@@ -1307,8 +1312,8 @@
             <label for="mch">MCH</label>
             <span class="unit-pill">pg</span>
           </div>
-          <div class="input-guide">Expected input: 10–40 &middot; Example: 20.5</div>
-          <input type="number" step="0.1" id="mch" placeholder="e.g. 20.5">
+          <input type="number" step="any" min="10" max="40" id="mch" placeholder="e.g. 20.5" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 10–40 pg | Example: 20.5</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
@@ -1319,8 +1324,8 @@
             <label for="rdw">RDW-CV</label>
             <span class="unit-pill">%</span>
           </div>
-          <div class="input-guide">Expected input: 5–40 &middot; Example: 15.4</div>
-          <input type="number" step="0.1" id="rdw" placeholder="e.g. 15.4">
+          <input type="number" step="any" min="5" max="40" id="rdw" placeholder="e.g. 15.4" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 5–40 % | Example: 15.4</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
         <div class="field" id="f-hct">
@@ -1328,8 +1333,8 @@
             <label for="hct">Hematocrit (HCT / PCV)</label>
             <span class="unit-pill">%</span>
           </div>
-          <div class="input-guide">Expected input: 10–75 &middot; Example: 34.5</div>
-          <input type="number" step="0.1" id="hct" placeholder="e.g. 34.5">
+          <input type="number" step="any" min="10" max="75" id="hct" placeholder="e.g. 34.5" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 10–75 % | Example: 34.5</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
@@ -1792,48 +1797,98 @@
 
   // ========================================================
   // SCREEN 2 VALIDATION (CBC Parameters)
-  // Input/plausibility ranges to prevent entry errors:
-  // Hb 3–25 g/dL, RBC 1–8 M/µL, MCV 40–120 fL,
-  // MCH 10–40 pg, RDW 5–40 %, HCT 10–75 %
+  // Allowed input ranges (plausibility limits):
+  // Hb 3–25 g/dL, RBC 1–8 million/µL, MCV 40–120 fL,
+  // MCH 10–40 pg, RDW-CV 5–40 %, HCT/PCV 10–75 %
   // ========================================================
+  const CBC_ALLOWED_RANGES = {
+    hb:  { min: 3.0,  max: 25.0, name: 'Hemoglobin (Hb)', unit: 'g/dL' },
+    rbc: { min: 1.0,  max: 8.0,  name: 'RBC count', unit: 'million/µL' },
+    mcv: { min: 40.0, max: 120.0, name: 'MCV', unit: 'fL' },
+    mch: { min: 10.0, max: 40.0, name: 'MCH', unit: 'pg' },
+    rdw: { min: 5.0,  max: 40.0, name: 'RDW-CV', unit: '%' },
+    hct: { min: 10.0, max: 75.0, name: 'Hematocrit (HCT / PCV)', unit: '%' }
+  };
+
   function validateScreen2(){
     let ok = true;
-    const ranges = {
-      hb:  { min: 3.0,  max: 25.0, divZeroGuard: true, name: 'Hemoglobin (Hb)', unit: 'g/dL' },
-      rbc: { min: 1.0,  max: 8.0,  divZeroGuard: true, name: 'RBC count', unit: 'million/µL' },
-      mcv: { min: 40.0, max: 120.0, name: 'MCV', unit: 'fL' },
-      mch: { min: 10.0, max: 40.0, name: 'MCH', unit: 'pg' },
-      rdw: { min: 5.0,  max: 40.0, name: 'RDW-CV', unit: '%' },
-      hct: { min: 10.0, max: 75.0, name: 'Hematocrit (HCT / PCV)', unit: '%' }
-    };
-
     const values = {};
-    for(const key in ranges){
+    for(const key in CBC_ALLOWED_RANGES){
       const el = document.getElementById(key);
       const raw = el ? el.value.trim() : '';
-      const v = parseFloat(raw);
-      const conf = ranges[key];
+      const conf = CBC_ALLOWED_RANGES[key];
       const fieldEl = document.getElementById('f-' + key);
       const errEl = fieldEl ? fieldEl.querySelector('.err-msg') : null;
 
       let bad = false;
+      let errMsg = '';
+
       if(raw === ''){
         bad = true;
-        if(errEl) errEl.textContent = 'Please enter this value.';
-      } else if(isNaN(v) || !isFinite(v) || v < conf.min || v > conf.max || (conf.divZeroGuard && v <= 0)){
-        bad = true;
-        if(errEl) errEl.textContent = `Please enter a valid value between ${conf.min} and ${conf.max} ${conf.unit}.`;
+        errMsg = 'Please enter this value.';
+      } else {
+        const v = Number(raw);
+        if(isNaN(v) || !isFinite(v)){
+          bad = true;
+          errMsg = 'Please enter a valid number.';
+        } else if(v < conf.min){
+          bad = true;
+          errMsg = `Value is outside the allowed input range (${conf.min}–${conf.max} ${conf.unit}). Must be at least ${conf.min} ${conf.unit}.`;
+        } else if(v > conf.max){
+          bad = true;
+          errMsg = `Value is outside the allowed input range (${conf.min}–${conf.max} ${conf.unit}). Cannot exceed ${conf.max} ${conf.unit}.`;
+        } else {
+          values[key] = v;
+        }
       }
 
+      if(errEl) errEl.textContent = errMsg;
       markInvalid('f-' + key, bad);
       if(bad) ok = false;
-      values[key] = v;
     }
 
     if(ok){
       patient.cbc = values;
     }
     return ok;
+  }
+
+  function setupCbcLiveValidation(){
+    for(const key in CBC_ALLOWED_RANGES){
+      const el = document.getElementById(key);
+      if(!el) continue;
+      const conf = CBC_ALLOWED_RANGES[key];
+      const handler = () => {
+        const raw = el.value.trim();
+        const fieldEl = document.getElementById('f-' + key);
+        const errEl = fieldEl ? fieldEl.querySelector('.err-msg') : null;
+
+        if(raw === ''){
+          if(fieldEl && fieldEl.classList.contains('invalid')){
+            if(errEl) errEl.textContent = 'Please enter this value.';
+          }
+          return;
+        }
+        const v = Number(raw);
+        if(isNaN(v) || !isFinite(v)){
+          markInvalid('f-' + key, true);
+          if(errEl) errEl.textContent = 'Please enter a valid number.';
+        } else if(v < conf.min){
+          markInvalid('f-' + key, true);
+          if(errEl) errEl.textContent = `Value is outside the allowed input range (${conf.min}–${conf.max} ${conf.unit}). Must be at least ${conf.min} ${conf.unit}.`;
+        } else if(v > conf.max){
+          markInvalid('f-' + key, true);
+          if(errEl) errEl.textContent = `Value is outside the allowed input range (${conf.min}–${conf.max} ${conf.unit}). Cannot exceed ${conf.max} ${conf.unit}.`;
+        } else {
+          markInvalid('f-' + key, false);
+          if(errEl) errEl.textContent = '';
+        }
+      };
+
+      el.addEventListener('input', handler);
+      el.addEventListener('change', handler);
+      el.addEventListener('blur', handler);
+    }
   }
 
   // ========================================================
@@ -3265,6 +3320,13 @@
   // INITIALIZATION ON LOAD
   // ========================================================
   document.addEventListener('DOMContentLoaded', () => {
+    // Keep all CBC fields empty when page opens
+    ['hb', 'rbc', 'mcv', 'mch', 'rdw', 'hct'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    setupCbcLiveValidation();
+
     // Seed and verify data store
     ResearchDataStore.getScreenings();
     // Update auth status in UI
