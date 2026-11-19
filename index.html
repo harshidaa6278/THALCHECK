@@ -1,1183 +1,1453 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#123B41">
-<meta name="description" content="ThalCheck — 11-Index Weighted Decision-Support Screening Prototype for Thalassemia Trait and Iron Deficiency Anemia">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="theme-color" content="#0F766E">
+<meta name="description" content="ThalCheck — Medical Screening Platform for Thalassemia Trait and Iron Deficiency Anemia (IDA)">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap" rel="stylesheet">
-<title>ThalCheck — Thalassemia / IDA Screening</title>
+<title>ThalCheck — Medical Screening Platform</title>
 <style>
-  :root{
-    --ink:#122024;
-    --navy:#123B41;
-    --navy-deep:#0B2529;
-    --teal:#2E7D74;
-    --teal-soft:#DCEFEC;
-    --paper:#F6F8F7;
-    --card:#FFFFFF;
-    --line:#DDE5E3;
-    --muted:#5B6E6C;
-    --amber:#B5750E;
-    --amber-soft:#FBF0DD;
-    --red:#B23A3A;
-    --red-soft:#FBE7E5;
-    --green:#2E7D4F;
-    --green-soft:#E4F3E8;
-    --radius:14px;
-    --serif: "Georgia", "Source Serif 4", "Times New Roman", serif;
-    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    font-family:var(--sans);
-    background:
-      radial-gradient(1200px 400px at 100% -10%, #E4F0EE 0%, transparent 60%),
-      var(--paper);
-    color:var(--ink);
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-  }
-  .shell{
-    max-width:720px;
-    margin:0 auto;
-    padding:28px 20px 60px;
-    transition:max-width .25s ease;
-  }
-  .shell.wide{
-    max-width:980px;
-  }
-  header.app-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:22px;
-    gap:14px;
-    flex-wrap:wrap;
-  }
-  .brand{
-    font-family:var(--serif);
-    font-size:26px;
-    font-weight:600;
-    color:var(--navy-deep);
-    letter-spacing:-0.01em;
-  }
-  .brand a{
-    color:inherit;
-    text-decoration:none;
-  }
-  .brand small{
-    display:block;
-    font-family:var(--sans);
-    font-size:12.5px;
-    font-weight:500;
-    color:var(--muted);
-    margin-top:2px;
-    letter-spacing:0.01em;
-  }
-  .dept-tag{
-    font-size:11.5px;
-    color:var(--teal);
-    background:var(--teal-soft);
-    padding:4px 10px;
-    border-radius:20px;
-    font-weight:600;
-    white-space:nowrap;
-  }
-  .head-actions{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-  }
-  .btn-portal-link{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    font-size:12px;
-    font-weight:600;
-    color:var(--navy-deep);
-    background:#FFFFFF;
-    border:1.4px solid var(--line);
-    padding:6px 12px;
-    border-radius:20px;
-    cursor:pointer;
-    transition:all .18s ease;
-  }
-  .btn-portal-link:hover{
-    background:var(--teal-soft);
-    border-color:var(--teal);
-    color:var(--navy);
-  }
-  .user-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    font-size:12px;
-    font-weight:600;
-    color:var(--teal);
-    background:var(--teal-soft);
-    padding:5px 11px;
-    border-radius:20px;
-  }
-  .research-nav{
-    display:inline-flex;
-    align-items:center;
-    background:#EEF3F2;
-    padding:3px;
-    border-radius:10px;
-    gap:2px;
-  }
-  .nav-tab{
-    border:none;
-    background:transparent;
-    font-size:12.5px;
-    font-weight:600;
-    color:var(--muted);
-    padding:6px 12px;
-    border-radius:8px;
-    cursor:pointer;
-    transition:all .15s ease;
-  }
-  .nav-tab:hover{
-    color:var(--navy-deep);
-    background:rgba(255,255,255,0.6);
-  }
-  .nav-tab.active{
-    background:var(--navy-deep);
-    color:#FFFFFF;
-    box-shadow:0 1px 3px rgba(11,37,41,0.15);
-  }
-  .nav-tab.nav-logout{
-    color:var(--red);
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-  }
-  .nav-tab.nav-logout:hover{
-    background:var(--red-soft);
-    color:var(--red);
+  :root {
+    --primary: #0F766E;
+    --primary-hover: #115E59;
+    --primary-light: #14B8A6;
+    --primary-soft: #F0FDFA;
+    --primary-border: #99F6E4;
+    
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --surface-subtle: #F1F5F9;
+    --surface-hover: #E2E8F0;
+    
+    --line: #E2E8F0;
+    --line-strong: #CBD5E1;
+    --line-focus: #0F766E;
+    
+    --ink: #0F172A;
+    --ink-secondary: #334155;
+    --ink-muted: #64748B;
+    --ink-subtle: #94A3B8;
+    
+    --thal: #0F766E;
+    --thal-soft: #F0FDFA;
+    --thal-border: #99F6E4;
+    
+    --ida: #D97706;
+    --ida-soft: #FFFBEB;
+    --ida-border: #FDE68A;
+    
+    --mixed: #475569;
+    --mixed-soft: #F8FAFC;
+    --mixed-border: #CBD5E1;
+    
+    --red: #DC2626;
+    --red-soft: #FEF2F2;
+    --red-border: #FECACA;
+    
+    --green: #16A34A;
+    --green-soft: #F0FDF4;
+    --green-border: #BBF7D0;
+    
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    
+    --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+    
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
   }
 
-  /* Stepper */
-  .stepper{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    margin-bottom:26px;
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
   }
-  .step-track{
-    flex:1;
-    height:3px;
-    background:var(--line);
-    border-radius:3px;
-    position:relative;
-    overflow:hidden;
+  body {
+    overflow-x: hidden;
   }
-  .step-track i{
-    display:block;
-    height:100%;
-    width:33.33%;
-    background:var(--teal);
-    border-radius:3px;
-    transition:width .35s ease;
+  .shell {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 16px 88px 16px;
+    transition: max-width .2s ease;
   }
-  .step-label{
-    font-size:12.5px;
-    font-weight:600;
-    color:var(--muted);
-    white-space:nowrap;
+  .shell.wide {
+    max-width: 1040px;
   }
-  .step-label.current{ color:var(--navy-deep); }
-
-  .card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:28px 26px;
-    box-shadow:0 1px 2px rgba(18,32,36,0.04);
-  }
-  .screen{ display:none; }
-  .screen.active{ display:block; animation:rise .28s ease; }
-  @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
-
-  h1.screen-title{
-    font-family:var(--serif);
-    font-size:21px;
-    font-weight:600;
-    margin:0 0 4px;
-    color:var(--navy-deep);
-  }
-  p.screen-sub{
-    margin:0 0 22px;
-    font-size:14px;
-    color:var(--muted);
-    line-height:1.5;
+  @media (min-width: 768px) {
+    .shell {
+      padding: 0 24px 48px 24px;
+    }
   }
 
-  .field{ margin-bottom:16px; }
-  .field label{
-    display:block;
-    font-size:13px;
-    font-weight:600;
-    color:var(--navy);
-    margin-bottom:6px;
+  /* Compact Healthcare Header */
+  .app-head {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    margin: 0 -16px 20px -16px;
   }
-  .field .hint{
-    font-size:11.5px;
-    color:var(--muted);
-    font-weight:400;
-    margin-left:6px;
+  @media (min-width: 768px) {
+    .app-head {
+      margin: 0 -24px 24px -24px;
+      padding: 14px 24px;
+    }
   }
-  .field input, .field select{
-    width:100%;
-    padding:11px 12px;
-    font-size:15px;
-    font-family:var(--sans);
-    border:1.4px solid var(--line);
-    border-radius:9px;
-    background:#FCFDFD;
-    color:var(--ink);
-    transition:border-color .15s ease, box-shadow .15s ease;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
   }
-  .field input:focus, .field select:focus{
-    outline:none;
-    border-color:var(--teal);
-    box-shadow:0 0 0 3px rgba(46,125,116,0.15);
+  .brand-logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-xs);
   }
-  .field input:invalid:not(:placeholder-shown){
-    border-color:var(--red);
+  .brand-text {
+    display: flex;
+    flex-direction: column;
   }
-  .row2{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
+  .brand-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-decoration: none;
   }
-  .err-msg{
-    font-size:12px;
-    color:var(--red);
-    margin-top:5px;
-    display:none;
+  .brand-sub {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin-top: 1px;
   }
-  .field.invalid .err-msg{ display:block; }
-  .field.invalid input, .field.invalid select{ border-color:var(--red); }
-
-  .actions{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:24px;
-    gap:12px;
+  .head-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  button{
-    font-family:var(--sans);
-    font-size:14.5px;
-    font-weight:600;
-    border-radius:9px;
-    padding:12px 20px;
-    border:none;
-    cursor:pointer;
-    transition:transform .1s ease, background .15s ease;
+  .btn-portal-link {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line-strong);
+    color: var(--ink-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .15s ease;
   }
-  button:active{ transform:scale(0.98); }
-  .btn-primary{
-    background:var(--navy-deep);
-    color:#fff;
-    flex:1;
+  .btn-portal-link:hover {
+    background: var(--primary-soft);
+    border-color: var(--primary-border);
+    color: var(--primary);
   }
-  .btn-primary:hover{ background:var(--navy); }
-  .btn-ghost{
-    background:transparent;
-    color:var(--muted);
-    padding:12px 14px;
+  .user-badge {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    color: var(--ink-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
-  .btn-ghost:hover{ color:var(--navy); }
-  .btn-primary:disabled{
-    background:#A9B7B5;
-    cursor:not-allowed;
+  .research-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface-subtle);
+    padding: 3px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
   }
-
-  /* Results screen */
-  .verdict{
-    border-radius:var(--radius);
-    padding:22px 24px;
-    margin-bottom:20px;
-    border:1.4px solid;
+  .nav-tab {
+    background: transparent;
+    border: none;
+    color: var(--ink-muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .15s ease;
   }
-  .verdict.thal{ background:var(--amber-soft); border-color:#EBD3A0; }
-  .verdict.ida{ background:var(--red-soft); border-color:#EDC5C1; }
-  .verdict.normal{ background:var(--green-soft); border-color:#BFE1CB; }
-  .verdict.mixed{ background:#FFF6E5; border-color:#E8CFA0; }
-  .verdict .tag{
-    font-size:11.5px;
-    font-weight:700;
-    letter-spacing:0.04em;
-    margin-bottom:6px;
-    display:block;
-    text-transform:uppercase;
+  .nav-tab:hover {
+    color: var(--ink);
   }
-  .verdict.thal .tag{ color:#8C5908; }
-  .verdict.ida .tag{ color:var(--red); }
-  .verdict.normal .tag{ color:var(--green); }
-  .verdict.mixed .tag{ color:#946309; }
-  .verdict h2{
-    font-family:var(--serif);
-    font-size:22px;
-    margin:0 0 8px;
-    color:var(--navy-deep);
+  .nav-tab.active {
+    background: #FFFFFF;
+    color: var(--primary);
+    box-shadow: var(--shadow-xs);
   }
-  .verdict p{
-    margin:0;
-    font-size:14px;
-    color:var(--ink);
-    line-height:1.55;
+  .nav-logout {
+    color: var(--red);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   }
-  .verdict .recommendation-box{
-    margin-top:14px;
-    padding:12px 14px;
-    background:#FFFFFF;
-    border:1.5px dashed #D69E2E;
-    border-radius:8px;
-    font-size:13.5px;
-    font-weight:600;
-    color:#744210;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .verdict .score-sub{
-    font-size:12.5px;
-    color:var(--muted);
-    margin-top:10px;
-  }
-
-  .patient-strip{
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px 16px;
-    font-size:12.5px;
-    color:var(--muted);
-    margin-bottom:12px;
-    padding-bottom:12px;
-    border-bottom:1px solid var(--line);
-  }
-  .patient-strip b{ color:var(--navy-deep); font-weight:600; }
-
-  .cbc-strip{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    font-size:12px;
-    margin-bottom:20px;
-    padding-bottom:14px;
-    border-bottom:1px solid var(--line);
-  }
-  .cbc-chip{
-    background:#F1F5F4;
-    border:1px solid var(--line);
-    border-radius:6px;
-    padding:4px 9px;
-    color:var(--ink);
-    font-variant-numeric:tabular-nums;
-  }
-  .cbc-chip b{ color:var(--navy-deep); }
-
-  /* Weighted Score Card */
-  .score-card{
-    background:#FAFBFB;
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:18px 20px;
-    margin-bottom:22px;
-  }
-  .score-card-title{
-    font-size:12.5px;
-    font-weight:700;
-    color:var(--navy-deep);
-    text-transform:uppercase;
-    letter-spacing:0.04em;
-    margin-bottom:12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  .score-metrics{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:14px;
-  }
-  .score-stat{
-    background:#FFF;
-    border:1px solid var(--line);
-    border-radius:8px;
-    padding:12px 14px;
-  }
-  .score-stat .lbl{
-    font-size:11.5px;
-    color:var(--muted);
-    font-weight:600;
-    margin-bottom:4px;
-  }
-  .score-stat .num{
-    font-size:20px;
-    font-weight:700;
-    font-variant-numeric:tabular-nums;
-  }
-  .score-stat.thal-stat .num{ color:#8C5908; }
-  .score-stat.ida-stat .num{ color:var(--red); }
-  .score-stat .pts{
-    font-size:11.5px;
-    font-weight:500;
-    color:var(--muted);
-    margin-top:2px;
-  }
-  .score-bar-track{
-    height:10px;
-    background:var(--red-soft);
-    border-radius:6px;
-    overflow:hidden;
-    display:flex;
-  }
-  .score-bar-fill{
-    height:100%;
-    background:#B5750E;
-    transition:width .4s ease;
-  }
-  .score-bar-labels{
-    display:flex;
-    justify-content:space-between;
-    font-size:11px;
-    color:var(--muted);
-    margin-top:6px;
-    font-weight:500;
+  .nav-logout:hover {
+    background: var(--red-soft);
+    color: var(--red);
   }
 
-  /* Table of 11 Indices */
-  .table-title{
-    font-family:var(--serif);
-    font-size:16px;
-    font-weight:600;
-    color:var(--navy-deep);
-    margin:0 0 10px;
-  }
-  .table-container{
-    overflow-x:auto;
-    border:1px solid var(--line);
-    border-radius:10px;
-    background:#FCFDFD;
-    margin-bottom:22px;
-    -webkit-overflow-scrolling:touch;
-  }
-  .idx-table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:12.5px;
-    text-align:left;
-  }
-  .idx-table th{
-    background:#F2F6F5;
-    color:var(--navy-deep);
-    font-weight:600;
-    padding:10px 12px;
-    border-bottom:1px solid var(--line);
-    white-space:nowrap;
-  }
-  .idx-table td{
-    padding:11px 12px;
-    border-bottom:1px solid var(--line);
-    vertical-align:middle;
-  }
-  .idx-table tr:last-child td{
-    border-bottom:none;
-  }
-  .idx-table tr:hover td{
-    background:#F8FAFA;
-  }
-  .idx-cell-name{
-    font-weight:600;
-    color:var(--navy-deep);
-    white-space:nowrap;
-  }
-  .idx-cell-formula{
-    font-size:10.5px;
-    color:var(--muted);
-    margin-top:2px;
-  }
-  .idx-cell-val{
-    font-weight:700;
-    font-variant-numeric:tabular-nums;
-    color:var(--ink);
-    white-space:nowrap;
-  }
-  .idx-cell-val small{
-    display:block;
-    font-size:10.5px;
-    font-weight:500;
-    color:var(--muted);
-  }
-  .idx-cell-cutoff{
-    color:var(--muted);
-    font-size:11.5px;
-    white-space:nowrap;
-  }
-  .wt-badge{
-    display:inline-block;
-    background:#EDF3F2;
-    color:var(--navy);
-    padding:2px 8px;
-    border-radius:12px;
-    font-weight:700;
-    font-size:11.5px;
-    text-align:center;
+  /* Stepper UI completely hidden as per Requirement 1 */
+  .stepper, #stepperContainer {
+    display: none !important;
   }
 
-  .pill{
-    font-size:11px;
-    font-weight:700;
-    padding:3px 8px;
-    border-radius:14px;
-    white-space:nowrap;
-    letter-spacing:0.02em;
-    display:inline-block;
+  /* Screen Containers */
+  .screen {
+    display: none;
   }
-  .pill.thal{ background:var(--amber-soft); color:#8C5908; border:1px solid #ECD5AC; }
-  .pill.ida{ background:var(--red-soft); color:var(--red); border:1px solid #F0C9C5; }
-
-  .disclaimer{
-    font-size:12px;
-    line-height:1.6;
-    color:var(--muted);
-    background:#F1F4F3;
-    border-radius:10px;
-    padding:14px 16px;
-    margin-bottom:22px;
+  .screen.active {
+    display: block;
+    animation: appScreenFade .18s ease-out;
   }
-  .disclaimer b{ color:var(--navy-deep); }
-
-  .result-actions{
-    display:flex;
-    gap:10px;
+  @keyframes appScreenFade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-  .btn-secondary{
-    background:var(--teal-soft);
-    color:var(--teal);
-    flex:1;
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 20px 18px;
+    margin-bottom: 20px;
   }
-  .btn-secondary:hover{ background:#CDE7E3; }
-
-  footer.credit{
-    text-align:center;
-    font-size:11.5px;
-    color:var(--muted);
-    margin-top:28px;
+  @media (min-width: 600px) {
+    .card {
+      padding: 28px 26px;
+    }
   }
 
-  /* Login Card */
-  .login-card{
-    max-width:440px;
-    margin:10px auto;
+  /* Screen Header */
+  .screen-header {
+    margin-bottom: 20px;
   }
-  .login-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    font-size:11.5px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.04em;
-    color:var(--teal);
-    background:var(--teal-soft);
-    padding:4px 10px;
-    border-radius:20px;
+  .screen-badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary);
+    background: var(--primary-soft);
+    border: 1px solid var(--primary-border);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
   }
-  .login-alert{
-    padding:11px 14px;
-    border-radius:8px;
-    font-size:13px;
-    margin-bottom:16px;
-    background:var(--red-soft);
-    color:var(--red);
-    border:1px solid #F0C9C5;
-    font-weight:500;
+  .screen-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
   }
-  .btn-toggle-pwd{
-    position:absolute;
-    right:10px;
-    top:50%;
-    transform:translateY(-50%);
-    background:none;
-    border:none;
-    padding:4px;
-    cursor:pointer;
-    color:var(--muted);
-    display:flex;
-    align-items:center;
+  .screen-sub {
+    font-size: 13.5px;
+    color: var(--ink-secondary);
+    line-height: 1.45;
+    margin: 0;
   }
-  .btn-toggle-pwd:hover{ color:var(--navy); }
-  .demo-cred-box{
-    background:#F5F8F7;
-    border:1px dashed var(--line);
-    border-radius:8px;
-    padding:12px 14px;
-    margin-top:16px;
-    font-size:12px;
+  .btn-screen-back {
+    background: none;
+    border: none;
+    padding: 0 0 10px 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    cursor: pointer;
+    transition: color .15s ease;
   }
-  .demo-cred-title{
-    font-weight:700;
-    color:var(--navy-deep);
-    margin-bottom:6px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
-  .demo-cred-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:6px;
-    color:var(--ink);
-  }
-  .demo-cred-row code{
-    background:#EAEFEF;
-    padding:2px 5px;
-    border-radius:4px;
-    font-family:monospace;
-    font-size:11.5px;
-  }
-  .btn-fill-demo{
-    font-size:11px;
-    padding:3px 9px;
-    border-radius:5px;
-    background:var(--teal);
-    color:#fff;
-    border:none;
-    cursor:pointer;
-    font-weight:600;
-  }
-  .btn-fill-demo:hover{ background:var(--navy); }
-
-  /* Research Dashboard */
-  .dash-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:16px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-  }
-  .dash-quick-actions{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-  }
-  .btn-sm{
-    padding:8px 14px;
-    font-size:13px;
-  }
-  .stats-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
-    gap:14px;
-    margin-bottom:24px;
-  }
-  .stat-card{
-    background:#FCFDFD;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:18px 16px;
-    box-shadow:0 1px 2px rgba(18,32,36,0.03);
-    transition:transform .18s ease, box-shadow .18s ease;
-  }
-  .stat-card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 4px 12px rgba(18,32,36,0.06);
-  }
-  .stat-card.total{ border-left:4px solid var(--navy); }
-  .stat-card.thal{ border-left:4px solid var(--amber); }
-  .stat-card.ida{ border-left:4px solid var(--red); }
-  .stat-card.mixed{ border-left:4px solid #D69E2E; }
-
-  .stat-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:8px;
-  }
-  .stat-label{
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:0.04em;
-    color:var(--muted);
-    text-transform:uppercase;
-  }
-  .stat-pill{
-    font-size:10.5px;
-    font-weight:700;
-    padding:2px 7px;
-    border-radius:12px;
-  }
-  .stat-pill.thal{ background:var(--amber-soft); color:#8C5908; }
-  .stat-pill.ida{ background:var(--red-soft); color:var(--red); }
-  .stat-pill.mixed{ background:#FFF4DF; color:#946309; }
-
-  .stat-value{
-    font-size:28px;
-    font-weight:700;
-    color:var(--navy-deep);
-    font-variant-numeric:tabular-nums;
-    line-height:1.2;
-  }
-  .stat-caption{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:4px;
+  .btn-screen-back:hover {
+    color: var(--primary-hover);
   }
 
-  .section-card{
-    background:#FCFDFD;
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:20px;
-    margin-bottom:20px;
+  /* Patient Form Groups (Screen 1) */
+  .form-group-card {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 16px;
   }
-  .section-card-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:14px;
+  .form-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
   }
-
-  /* History Filters & Table */
-  .filter-bar{
-    display:flex;
-    gap:12px;
-    margin-bottom:14px;
-    flex-wrap:wrap;
-    align-items:center;
+  .field {
+    margin-bottom: 14px;
+    position: relative;
   }
-  .search-input-box{
-    position:relative;
-    flex:1;
-    min-width:240px;
+  .field:last-child {
+    margin-bottom: 0;
   }
-  .search-input-box svg{
-    position:absolute;
-    left:12px;
-    top:50%;
-    transform:translateY(-50%);
-    color:var(--muted);
-    pointer-events:none;
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 5px;
   }
-  .search-input-box input{
-    width:100%;
-    padding:10px 32px 10px 36px;
-    font-size:13.5px;
-    border:1.4px solid var(--line);
-    border-radius:8px;
-    background:#FFFFFF;
-    color:var(--ink);
+  .field .hint {
+    font-weight: 400;
+    color: var(--ink-muted);
+    font-size: 11.5px;
+    margin-left: 4px;
   }
-  .search-input-box input:focus{
-    outline:none;
-    border-color:var(--teal);
-    box-shadow:0 0 0 3px rgba(46,125,116,0.12);
+  .field input, .field select {
+    width: 100%;
+    height: 46px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 0 14px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--ink);
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .btn-clear-search{
-    position:absolute;
-    right:8px;
-    top:50%;
-    transform:translateY(-50%);
-    border:none;
-    background:transparent;
-    color:var(--muted);
-    font-size:16px;
-    cursor:pointer;
-    padding:2px 6px;
+  .field input::placeholder {
+    color: var(--ink-subtle);
   }
-  .filter-select-box{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
-    color:var(--navy-deep);
-    font-weight:600;
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
   }
-  .filter-select-box select{
-    padding:9px 12px;
-    border:1.4px solid var(--line);
-    border-radius:8px;
-    background:#FFFFFF;
-    font-size:13px;
-    color:var(--ink);
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
   }
-  .filter-summary-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:12px;
+  .field.invalid input, .field.invalid select {
+    border-color: var(--red);
+    background-color: var(--red-soft);
   }
-
-  /* Table Action Buttons */
-  .btn-table-action{
-    font-size:11.5px;
-    font-weight:600;
-    padding:5px 10px;
-    border-radius:6px;
-    border:1px solid;
-    cursor:pointer;
-    display:inline-flex;
-    align-items:center;
-    gap:4px;
-    background:transparent;
-    margin-left:4px;
+  .field.invalid input:focus, .field.invalid select:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
   }
-  .btn-table-action.view{
-    color:var(--teal);
-    border-color:#BDDCD7;
-    background:var(--teal-soft);
+  .err-msg {
+    display: none;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--red);
+    margin-top: 5px;
+    line-height: 1.35;
   }
-  .btn-table-action.view:hover{ background:#CBE9E3; }
-  .btn-table-action.dl{
-    color:var(--navy-deep);
-    border-color:var(--line);
-    background:#FFFFFF;
+  .field.invalid .err-msg {
+    display: block;
   }
-  .btn-table-action.dl:hover{ background:#F0F4F3; }
-
-  .empty-state{
-    text-align:center;
-    padding:36px 20px;
+  .row2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 500px) {
+    .row2 {
+      grid-template-columns: 1fr;
+    }
   }
 
-  /* Record Modal */
-  .modal-backdrop{
-    position:fixed;
-    inset:0;
-    background:rgba(11,37,41,0.55);
-    backdrop-filter:blur(4px);
-    z-index:9999;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
+  /* CBC Screen (Screen 2) */
+  .cbc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
   }
-  .modal-backdrop.open{
-    display:flex;
-    animation:fadeIn .2s ease;
+  @media (max-width: 580px) {
+    .cbc-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
   }
-  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
-  .modal-card{
-    background:#FFFFFF;
-    border-radius:14px;
-    max-width:760px;
-    width:100%;
-    max-height:90vh;
-    display:flex;
-    flex-direction:column;
-    box-shadow:0 18px 45px rgba(11,37,41,0.22);
-    border:1px solid var(--line);
-    overflow:hidden;
-    animation:rise .25s ease;
+  .cbc-field {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-bottom: 0;
+    box-shadow: var(--shadow-xs);
+    transition: border-color .15s ease, box-shadow .15s ease;
   }
-  .modal-header{
-    padding:16px 22px;
-    border-bottom:1px solid var(--line);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#FCFDFD;
+  .cbc-field:focus-within {
+    border-color: var(--primary);
   }
-  .modal-title{
-    margin:2px 0 0;
-    font-size:18px;
-    font-family:var(--serif);
-    color:var(--navy-deep);
+  .cbc-field.invalid {
+    border-color: var(--red-border);
+    background-color: #FFFDFD;
   }
-  .btn-close-modal{
-    border:none;
-    background:transparent;
-    font-size:22px;
-    color:var(--muted);
-    cursor:pointer;
-    padding:4px 8px;
-    border-radius:6px;
-    line-height:1;
+  .field-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
   }
-  .btn-close-modal:hover{
-    background:#EDF2F1;
-    color:var(--ink);
+  .field-top label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0;
   }
-  .modal-body{
-    padding:22px;
-    overflow-y:auto;
-    flex:1;
+  .unit-pill {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--primary-border);
   }
-  .modal-footer{
-    padding:14px 22px;
-    border-top:1px solid var(--line);
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
-    background:#FCFDFD;
+  .allowed-range {
+    display: block !important;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    margin-top: 6px;
+    line-height: 1.35;
+  }
+  .field.invalid .allowed-range {
+    display: block !important;
+  }
+  .allowed-range .range-tag {
+    font-weight: 600;
+    color: var(--ink-secondary);
   }
 
-  /* Prominent Researcher Portal Banner on Welcome Screen */
-  .portal-banner-card{
-    background:linear-gradient(135deg, #F0F6F5 0%, #E6EFEB 100%);
-    border:1.5px solid #C5DDD8;
-    border-radius:12px;
-    padding:16px 20px;
-    margin-bottom:24px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    cursor:pointer;
-    transition:all .2s ease;
-    box-shadow:0 2px 5px rgba(18,59,65,0.05);
+  /* Action Buttons */
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
   }
-  .portal-banner-card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 6px 16px rgba(18,59,65,0.1);
-    border-color:var(--teal);
+  .btn-primary {
+    background: var(--primary);
+    color: #FFFFFF;
+    border: none;
+    height: 48px;
+    padding: 0 20px;
+    font-size: 14.5px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background .15s ease, transform .05s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    text-align: center;
   }
-  .portal-banner-icon{
-    width:42px;
-    height:42px;
-    border-radius:10px;
-    background:#FFFFFF;
-    color:var(--teal);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-    border:1px solid #D5E5E2;
+  .btn-primary:hover {
+    background: var(--primary-hover);
   }
-  .portal-banner-body{
-    flex:1;
+  .btn-primary:active {
+    transform: scale(0.99);
   }
-  .portal-banner-badge{
-    display:inline-block;
-    font-size:10.5px;
-    font-weight:700;
-    letter-spacing:0.05em;
-    text-transform:uppercase;
-    color:var(--teal);
-    margin-bottom:2px;
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-secondary);
+    border: 1px solid var(--line-strong);
+    height: 48px;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all .15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  .portal-banner-title{
-    font-family:var(--serif);
-    font-size:18px;
-    font-weight:600;
-    color:var(--navy-deep);
-    margin:0 0 4px;
-    letter-spacing:-0.01em;
+  .btn-ghost:hover {
+    background: var(--surface-subtle);
+    color: var(--ink);
   }
-  .portal-banner-desc{
-    font-size:12.5px;
-    color:var(--ink);
-    margin:0;
-    line-height:1.45;
+  .btn-secondary {
+    background: var(--surface-subtle);
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+    height: 48px;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all .15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 1;
   }
-  .btn-portal-banner{
-    background:var(--navy-deep);
-    color:#FFFFFF;
-    border:none;
-    padding:10px 16px;
-    border-radius:8px;
-    font-size:13px;
-    font-weight:600;
-    cursor:pointer;
-    white-space:nowrap;
-    transition:background .15s ease;
-    flex-shrink:0;
-  }
-  .btn-portal-banner:hover{
-    background:var(--navy);
+  .btn-secondary:hover {
+    background: var(--surface-hover);
   }
 
-  /* CBC Input Guides & Header */
-  .field-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:baseline;
-    margin-bottom:4px;
+  /* Results Screen (Screen 3) */
+  .screening-record-header {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
   }
-  .field-top label{
-    margin-bottom:0 !important;
-    font-size:13px;
-    font-weight:600;
-    color:var(--navy);
+  .rec-sub {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
   }
-  .unit-pill{
-    font-size:11px;
-    font-weight:700;
-    color:var(--teal);
-    background:var(--teal-soft);
-    padding:2px 7px;
-    border-radius:6px;
-    letter-spacing:0.02em;
+  .rec-id {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    font-family: monospace;
+    letter-spacing: 0.02em;
   }
-  .allowed-range{
-    display:block !important;
-    font-size:11.5px;
-    color:var(--muted);
-    margin-top:5px;
-    font-weight:500;
-    line-height:1.3;
+  .summary-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
   }
-  .allowed-range .range-tag{
-    font-weight:600;
-    color:var(--navy);
+  .summary-card {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+  }
+  .summary-card-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .patient-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    font-size: 13px;
+    color: var(--ink-secondary);
+    line-height: 1.4;
+  }
+  .patient-strip span {
+    display: inline-flex;
+    align-items: center;
+  }
+  .patient-strip span b {
+    color: var(--ink);
+    font-size: 13.5px;
+  }
+  .cbc-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  @media (max-width: 520px) {
+    .cbc-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .cbc-chip {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12.5px;
+    color: var(--ink-secondary);
+  }
+  .cbc-chip b {
+    color: var(--ink);
   }
 
-  /* Screening Record ID Header (Medical Research Document Style) */
-  .screening-record-header{
-    margin-bottom:16px;
-    padding-bottom:12px;
-    border-bottom:1.5px solid var(--line);
+  /* Verdict Card */
+  .verdict {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--primary);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-xs);
   }
-  .screening-record-header .rec-sub{
-    font-family:var(--sans);
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:0.08em;
-    color:var(--teal);
-    text-transform:uppercase;
-    margin-bottom:3px;
+  .verdict.thal {
+    border-left-color: var(--thal);
+    background: linear-gradient(to right, rgba(15, 118, 110, 0.04), transparent);
   }
-  .screening-record-header .rec-id{
-    font-family:"Source Serif 4", "Libre Baskerville", Georgia, "Times New Roman", serif;
-    font-size:22px;
-    font-weight:400;
-    font-optical-sizing:auto;
-    color:var(--navy-deep);
-    letter-spacing:0.005em;
-    line-height:1.25;
+  .verdict.ida {
+    border-left-color: var(--ida);
+    background: linear-gradient(to right, rgba(217, 119, 6, 0.04), transparent);
+  }
+  .verdict.mixed {
+    border-left-color: var(--mixed);
+    background: linear-gradient(to right, rgba(71, 85, 105, 0.04), transparent);
+  }
+  .verdict .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background: var(--surface-subtle);
+    color: var(--ink-muted);
+    border: 1px solid var(--line);
+  }
+  .verdict h2 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .verdict p {
+    font-size: 13.5px;
+    color: var(--ink-secondary);
+    line-height: 1.5;
+    margin: 0 0 10px 0;
+  }
+  .recommendation-box {
+    background: var(--ida-soft);
+    border: 1px solid var(--ida-border);
+    color: #92400E;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .score-sub {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    margin-top: 8px;
   }
 
-  /* Export Dropdown Menu */
-  .export-dropdown{
-    position:relative;
-    display:inline-block;
+  /* Weighted Summary Card */
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-xs);
   }
-  .export-menu{
-    position:absolute;
-    right:0;
-    top:calc(100% + 6px);
-    background:#FFFFFF;
-    border:1px solid var(--line);
-    border-radius:10px;
-    box-shadow:0 12px 30px rgba(11,37,41,0.16);
-    min-width:300px;
-    z-index:1000;
-    display:none;
-    overflow:hidden;
-    animation:rise .18s ease;
+  .score-card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
   }
-  .export-menu.show{
-    display:block;
+  .wt-total-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    background: var(--surface-subtle);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
   }
-  .export-menu-item{
-    width:100%;
-    text-align:left;
-    background:transparent;
-    border:none;
-    padding:11px 16px;
-    cursor:pointer;
-    display:block;
-    transition:background .15s ease;
+  .score-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
   }
-  .export-menu-item:hover{
-    background:#F2F6F5;
+  @media (max-width: 480px) {
+    .score-metrics {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
   }
-  .export-item-title{
-    font-size:13px;
-    font-weight:700;
-    color:var(--navy-deep);
-    margin-bottom:2px;
+  .score-stat {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: left;
   }
-  .export-item-desc{
-    font-size:11px;
-    color:var(--muted);
-    line-height:1.35;
+  .score-stat.thal-stat {
+    border-left: 3px solid var(--thal);
   }
-  .export-menu-divider{
-    height:1px;
-    background:var(--line);
-    margin:2px 0;
+  .score-stat.ida-stat {
+    border-left: 3px solid var(--ida);
+  }
+  .score-stat .lbl {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+  .score-stat .num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .score-stat .pts {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+  .score-bar-track {
+    height: 8px;
+    background: var(--ida-border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .score-bar-fill {
+    height: 100%;
+    background: var(--thal);
+    transition: width .4s ease;
+  }
+  .score-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  /* 11 Indices Table */
+  .section-block {
+    margin-bottom: 20px;
+  }
+  .table-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 10px 0;
+  }
+  .table-container {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--surface);
+  }
+  .idx-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    text-align: left;
+    min-width: 520px;
+  }
+  .idx-table th {
+    background: var(--surface-subtle);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .idx-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  .idx-table tr:last-child td {
+    border-bottom: none;
+  }
+  .idx-cell-name {
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .idx-cell-formula {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-family: monospace;
+    margin-top: 2px;
+  }
+  .idx-cell-val {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .idx-cell-cutoff {
+    font-size: 11.5px;
+    color: var(--ink-secondary);
+    white-space: nowrap;
+  }
+  .pill {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .pill.thal {
+    background: var(--thal-soft);
+    color: var(--thal);
+    border: 1px solid var(--thal-border);
+  }
+  .pill.ida {
+    background: var(--ida-soft);
+    color: var(--ida);
+    border: 1px solid var(--ida-border);
+  }
+  .pill.mixed {
+    background: var(--mixed-soft);
+    color: var(--mixed);
+    border: 1px solid var(--mixed-border);
+  }
+  .wt-badge {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 50%;
+    background: var(--surface-subtle);
+    color: var(--ink-secondary);
+    border: 1px solid var(--line);
+  }
+
+  /* Disclaimer */
+  .disclaimer {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ink-muted);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .disclaimer-icon {
+    color: var(--ink-muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .result-actions {
+    display: flex;
+    gap: 12px;
+  }
+  @media (max-width: 480px) {
+    .result-actions {
+      flex-direction: column-reverse;
+    }
+  }
+
+  /* Mobile Bottom Navigation */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)) 12px;
+    display: flex;
+    justify-content: center;
+  }
+  @media (min-width: 768px) {
+    .mobile-bottom-nav {
+      display: none !important;
+    }
+  }
+  .bnav-group {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    justify-content: space-around;
+  }
+  .bnav-item {
+    background: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: var(--ink-muted);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+  .bnav-item svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+  }
+  .bnav-item.active {
+    color: var(--primary);
+    background: var(--primary-soft);
+  }
+
+  /* Login Screen */
+  .login-card {
+    max-width: 440px;
+    margin: 10px auto;
+  }
+  .login-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-soft);
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--primary-border);
+  }
+  .login-alert {
+    background: var(--red-soft);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .btn-toggle-pwd {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--ink-muted);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+  }
+  .demo-cred-box {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-top: 16px;
+  }
+  .demo-cred-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+  .demo-cred-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-secondary);
+    padding: 4px 0;
+  }
+  .demo-cred-row code {
+    background: var(--surface);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 11.5px;
+    border: 1px solid var(--line);
+  }
+  .btn-fill-demo {
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-fill-demo:hover {
+    background: var(--primary-soft);
+    border-color: var(--primary-border);
+  }
+
+  /* Dashboard */
+  .dash-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .dash-quick-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .btn-sm {
+    height: 38px !important;
+    padding: 0 14px !important;
+    font-size: 13px !important;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 860px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-xs);
+  }
+  .stat-card.total { border-top: 3px solid var(--ink); }
+  .stat-card.thal { border-top: 3px solid var(--thal); }
+  .stat-card.ida { border-top: 3px solid var(--ida); }
+  .stat-card.mixed { border-top: 3px solid var(--mixed); }
+  .stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+  .stat-pill {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .stat-pill.thal { background: var(--thal-soft); color: var(--thal); }
+  .stat-pill.ida { background: var(--ida-soft); color: var(--ida); }
+  .stat-pill.mixed { background: var(--mixed-soft); color: var(--mixed); }
+  .stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-caption {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    margin-top: 4px;
+  }
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .section-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* History Screen */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .search-input-box {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+  }
+  .search-input-box svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-muted);
+    pointer-events: none;
+  }
+  .search-input-box input {
+    width: 100%;
+    height: 42px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 0 32px 0 36px;
+    font-size: 13.5px;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .search-input-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .btn-clear-search {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    padding: 4px;
+  }
+  .filter-select-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .filter-select-box label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-secondary);
+  }
+  .filter-select-box select {
+    height: 42px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 0 28px 0 10px;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .filter-summary-row {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+  }
+  .btn-table-action {
+    background: var(--surface-subtle);
+    border: 1px solid var(--line);
+    color: var(--ink-secondary);
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 5px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .15s ease;
+    margin-left: 4px;
+  }
+  .btn-table-action:hover {
+    background: var(--primary-soft);
+    border-color: var(--primary-border);
+    color: var(--primary);
+  }
+  .empty-state {
+    text-align: center;
+    padding: 32px 16px;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-backdrop.open {
+    display: flex;
+  }
+  .modal-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .btn-close-modal {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+  .modal-body {
+    padding: 18px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+  }
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--line);
+    background: var(--surface-subtle);
+  }
+
+  /* Export Dropdown */
+  .export-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .export-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 4px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    width: 290px;
+    z-index: 60;
+  }
+  .export-menu.show {
+    display: block;
+  }
+  .export-menu-item {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 10px 14px;
+    cursor: pointer;
+    display: block;
+    transition: background .15s ease;
+  }
+  .export-menu-item:hover {
+    background: var(--surface-subtle);
+  }
+  .export-item-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .export-item-desc {
+    font-size: 11px;
+    color: var(--ink-muted);
+    line-height: 1.35;
+  }
+  .export-menu-divider {
+    height: 1px;
+    background: var(--line);
+    margin: 2px 0;
   }
 
   /* Demo & Live Badges */
-  .badge-demo{
-    font-size:9.5px;
-    font-weight:700;
-    background:#EAEFEF;
-    color:var(--muted);
-    padding:2px 6px;
-    border-radius:4px;
-    letter-spacing:0.04em;
-    display:inline-block;
-    vertical-align:1px;
-    margin-left:4px;
+  .badge-demo {
+    font-size: 9.5px;
+    font-weight: 700;
+    background: #EAEFEF;
+    color: var(--ink-muted);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    display: inline-block;
+    vertical-align: 1px;
+    margin-left: 4px;
   }
-  .badge-live{
-    font-size:9.5px;
-    font-weight:700;
-    background:var(--green-soft);
-    color:var(--green);
-    padding:2px 6px;
-    border-radius:4px;
-    letter-spacing:0.04em;
-    display:inline-block;
-    vertical-align:1px;
-    margin-left:4px;
-  }
-
-  @media print{
-    .stepper, .actions, .result-actions, header .dept-tag, .head-actions, .research-nav, .filter-bar, .modal-backdrop, .dash-head, .stats-grid, .section-card, .btn-portal-link, .no-print{ display:none !important; }
-    body{ background:#fff; }
-    .card{ box-shadow:none; border:none; padding:0; }
-    .shell{ max-width:100% !important; padding:0 !important; }
-    .screen{ display:none !important; }
-    #screen3{ display:block !important; }
+  .badge-live {
+    font-size: 9.5px;
+    font-weight: 700;
+    background: var(--green-soft);
+    color: var(--green);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    display: inline-block;
+    vertical-align: 1px;
+    margin-left: 4px;
   }
 
-  @media (max-width:720px){
-    .filter-bar{ flex-direction:column; align-items:stretch; }
-    .dash-head{ flex-direction:column; }
-    .stats-grid{ grid-template-columns:1fr 1fr; }
+  /* Footer */
+  .credit {
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 24px;
+    padding-bottom: 12px;
   }
 
-  @media (max-width:480px){
-    .row2{ grid-template-columns:1fr; }
-    .score-metrics{ grid-template-columns:1fr; }
-    .stats-grid{ grid-template-columns:1fr; }
-    .card{ padding:20px 16px; }
+  /* Print Styles */
+  @media print {
+    .stepper, .actions, .result-actions, .app-head, .mobile-bottom-nav, .filter-bar, .modal-backdrop, .dash-head, .stats-grid, .section-card, .btn-portal-link, .no-print, .btn-screen-back, .credit {
+      display: none !important;
+    }
+    body {
+      background: #FFFFFF !important;
+      color: #000000 !important;
+      font-size: 11pt;
+    }
+    .card {
+      box-shadow: none !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .shell {
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .screen {
+      display: none !important;
+    }
+    #screen3 {
+      display: block !important;
+    }
+    .idx-table {
+      min-width: 100% !important;
+    }
+    .verdict {
+      box-shadow: none !important;
+      border: 1px solid #CBD5E1 !important;
+      border-left: 5px solid #0F766E !important;
+    }
+    .score-card {
+      box-shadow: none !important;
+      border: 1px solid #CBD5E1 !important;
+    }
   }
 </style>
 </head>
+
 <body>
 <div class="shell">
 
+  <!-- COMPACT CLINICAL HEADER -->
   <header class="app-head">
-    <div class="brand">
-      <a href="#" onclick="navToScreening(event)">ThalCheck</a>
-      <small>Medical Research Decision-Support · Screening Prototype</small>
+    <div class="brand" onclick="navToScreening(event)">
+      <div class="brand-logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20M2 12h20"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">ThalCheck</span>
+        <span class="brand-sub">Medical Screening Platform</span>
+      </div>
     </div>
     <div class="head-actions">
       <!-- Public / Unauthenticated state -->
       <div id="authPublicNav" style="display:flex; align-items:center; gap:8px;">
-        <span class="dept-tag">Research Screening</span>
         <button class="btn-portal-link" onclick="openLoginScreen()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           Researcher Portal
@@ -1202,163 +1472,184 @@
     </div>
   </header>
 
-  <div class="stepper" id="stepperContainer">
-    <span class="step-label current" id="stepLabel">Step 1 of 3</span>
-    <div class="step-track"><i id="stepFill" style="width:33.33%"></i></div>
+  <!-- Internal compatibility container (kept invisible for scripts) -->
+  <div id="stepperContainer" style="display:none !important;" aria-hidden="true">
+    <span id="stepLabel" style="display:none !important;"></span>
+    <i id="stepFill" style="display:none !important;"></i>
   </div>
 
   <div class="card">
 
     <!-- SCREEN 1: Patient details -->
     <section class="screen active" id="screen1">
-      <!-- PROMINENT RESEARCHER PORTAL BANNER -->
-      <div class="portal-banner-card" onclick="openLoginScreen()">
-        <div class="portal-banner-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        </div>
-        <div class="portal-banner-body">
-          <div class="portal-banner-badge">Authorized Research Access</div>
-          <div class="portal-banner-title">Researcher Portal</div>
-          <p class="portal-banner-desc">Authorized research personnel can access screening history, review patient records, and download research reports.</p>
-        </div>
-        <button type="button" class="btn-portal-banner" onclick="openLoginScreen(); event.stopPropagation();">
-          Enter Portal &rarr;
-        </button>
+      <div class="screen-header">
+        <div class="screen-badge">PATIENT REGISTRATION</div>
+        <h1 class="screen-title">Patient Demographics</h1>
+        <p class="screen-sub">Enter patient demographic details to initiate clinical screening.</p>
       </div>
 
-      <h1 class="screen-title">Patient details</h1>
-      <p class="screen-sub">Enter patient demographic details to initiate this screening record.</p>
-
-      <div class="field" id="f-name">
-        <label for="name">Full name</label>
-        <input type="text" id="name" placeholder="e.g. Kavya R" autocomplete="name">
-        <div class="err-msg">Please enter this value.</div>
-      </div>
-
-      <div class="row2">
-        <div class="field" id="f-age">
-          <label for="age">Age <span class="hint">years</span></label>
-          <input type="number" id="age" min="0" max="120" placeholder="e.g. 24">
-          <div class="err-msg">Please enter this value.</div>
-        </div>
-        <div class="field" id="f-sex">
-          <label for="sex">Sex</label>
-          <select id="sex">
-            <option value="" disabled selected>Select sex</option>
-            <option value="Female">Female</option>
-            <option value="Male">Male</option>
-            <option value="Other">Other</option>
-          </select>
+      <div class="form-group-card">
+        <div class="form-group-title">Patient Identification</div>
+        <div class="field" id="f-name">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="e.g. Kavya R" autocomplete="name">
           <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
 
-      <div class="field" id="f-email">
-        <label for="email">Email ID</label>
-        <input type="email" id="email" placeholder="name@example.com" autocomplete="email">
-        <div class="err-msg">Please enter this value.</div>
+      <div class="form-group-card">
+        <div class="form-group-title">Demographics</div>
+        <div class="row2">
+          <div class="field" id="f-age">
+            <label for="age">Age <span class="hint">years</span></label>
+            <input type="number" id="age" min="0" max="120" placeholder="e.g. 24">
+            <div class="err-msg">Please enter this value.</div>
+          </div>
+          <div class="field" id="f-sex">
+            <label for="sex">Sex</label>
+            <select id="sex">
+              <option value="" disabled selected>Select sex</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+            <div class="err-msg">Please enter this value.</div>
+          </div>
+        </div>
       </div>
 
-      <div class="field" id="f-place">
-        <label for="place">Place</label>
-        <input type="text" id="place" placeholder="e.g. Chennai" autocomplete="address-level2">
-        <div class="err-msg">Please enter this value.</div>
+      <div class="form-group-card">
+        <div class="form-group-title">Contact &amp; Location</div>
+        <div class="row2">
+          <div class="field" id="f-email">
+            <label for="email">Email ID</label>
+            <input type="email" id="email" placeholder="name@example.com" autocomplete="email">
+            <div class="err-msg">Please enter this value.</div>
+          </div>
+          <div class="field" id="f-place">
+            <label for="place">Place / City</label>
+            <input type="text" id="place" placeholder="e.g. Chennai" autocomplete="address-level2">
+            <div class="err-msg">Please enter this value.</div>
+          </div>
+        </div>
       </div>
 
       <div class="actions">
         <span></span>
-        <button class="btn-primary" onclick="goToScreen2()">Continue to CBC values</button>
+        <button type="button" class="btn-primary" onclick="goToScreen2()">
+          Continue to CBC Parameters &rarr;
+        </button>
       </div>
     </section>
 
     <!-- SCREEN 2: CBC input -->
     <section class="screen" id="screen2">
-      <h1 class="screen-title">CBC parameters</h1>
-      <p class="screen-sub">Enter automated blood analyzer values. Allowed input ranges assist in preventing entry errors (broad plausibility limits for prototype screening).</p>
+      <div class="screen-header">
+        <button type="button" class="btn-screen-back" onclick="goToScreen1()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          Back to Patient Demographics
+        </button>
+        <div class="screen-badge">CBC PARAMETERS</div>
+        <h1 class="screen-title">Hematology Analyzer Input</h1>
+        <p class="screen-sub">Enter automated blood analyzer values. Allowed input ranges assist in preventing entry errors.</p>
+      </div>
 
-      <div class="row2">
-        <div class="field" id="f-hb">
+      <div class="cbc-grid">
+        <div class="field cbc-field" id="f-hb">
           <div class="field-top">
             <label for="hb">Hemoglobin (Hb)</label>
             <span class="unit-pill">g/dL</span>
           </div>
-          <input type="number" step="any" min="3" max="25" id="hb" placeholder="e.g. 11.2" autocomplete="off">
-          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 3–25 g/dL | Example: 11.2</div>
+          <input type="number" step="any" min="3" max="25" id="hb" placeholder="Enter value" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed range:</span> 3–25 g/dL &middot; Example: 11.2</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
-        <div class="field" id="f-rbc">
+
+        <div class="field cbc-field" id="f-rbc">
           <div class="field-top">
-            <label for="rbc">RBC count</label>
+            <label for="rbc">RBC Count</label>
             <span class="unit-pill">million/µL</span>
           </div>
-          <input type="number" step="any" min="1" max="8" id="rbc" placeholder="e.g. 5.40" autocomplete="off">
-          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 1–8 million/µL | Example: 5.40</div>
+          <input type="number" step="any" min="1" max="8" id="rbc" placeholder="Enter value" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed range:</span> 1–8 million/µL &middot; Example: 5.40</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
-      </div>
 
-      <div class="row2">
-        <div class="field" id="f-mcv">
+        <div class="field cbc-field" id="f-mcv">
           <div class="field-top">
             <label for="mcv">MCV</label>
             <span class="unit-pill">fL</span>
           </div>
-          <input type="number" step="any" min="40" max="120" id="mcv" placeholder="e.g. 72.0" autocomplete="off">
-          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 40–120 fL | Example: 72.0</div>
+          <input type="number" step="any" min="40" max="120" id="mcv" placeholder="Enter value" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed range:</span> 40–120 fL &middot; Example: 72.0</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
-        <div class="field" id="f-mch">
+
+        <div class="field cbc-field" id="f-mch">
           <div class="field-top">
             <label for="mch">MCH</label>
             <span class="unit-pill">pg</span>
           </div>
-          <input type="number" step="any" min="10" max="40" id="mch" placeholder="e.g. 20.5" autocomplete="off">
-          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 10–40 pg | Example: 20.5</div>
+          <input type="number" step="any" min="10" max="40" id="mch" placeholder="Enter value" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed range:</span> 10–40 pg &middot; Example: 20.5</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
-      </div>
 
-      <div class="row2">
-        <div class="field" id="f-rdw">
+        <div class="field cbc-field" id="f-rdw">
           <div class="field-top">
             <label for="rdw">RDW-CV</label>
             <span class="unit-pill">%</span>
           </div>
-          <input type="number" step="any" min="5" max="40" id="rdw" placeholder="e.g. 15.4" autocomplete="off">
-          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 5–40 % | Example: 15.4</div>
+          <input type="number" step="any" min="5" max="40" id="rdw" placeholder="Enter value" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed range:</span> 5–40 % &middot; Example: 15.4</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
-        <div class="field" id="f-hct">
+
+        <div class="field cbc-field" id="f-hct">
           <div class="field-top">
             <label for="hct">Hematocrit (HCT / PCV)</label>
             <span class="unit-pill">%</span>
           </div>
-          <input type="number" step="any" min="10" max="75" id="hct" placeholder="e.g. 34.5" autocomplete="off">
-          <div class="allowed-range"><span class="range-tag">Allowed input range:</span> 10–75 % | Example: 34.5</div>
+          <input type="number" step="any" min="10" max="75" id="hct" placeholder="Enter value" autocomplete="off">
+          <div class="allowed-range"><span class="range-tag">Allowed range:</span> 10–75 % &middot; Example: 34.5</div>
           <div class="err-msg">Please enter this value.</div>
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn-ghost" onclick="goToScreen1()">Back</button>
-        <button class="btn-primary" onclick="calculateAndShowResult()">Calculate result</button>
+        <button type="button" class="btn-ghost" onclick="goToScreen1()">Back</button>
+        <button type="button" class="btn-primary" onclick="calculateAndShowResult()">Calculate Result &rarr;</button>
       </div>
     </section>
 
     <!-- SCREEN 3: Results -->
     <section class="screen" id="screen3">
+      <div class="screen-header">
+        <div class="screen-badge">SCREENING REPORT</div>
+        <h1 class="screen-title">Clinical Screening Assessment</h1>
+        <p class="screen-sub">Automated consensus evaluation across 11 published discriminant indices.</p>
+      </div>
+
       <!-- SCREENING RECORD HEADER (Dignified Medical Document Style) -->
       <div class="screening-record-header" id="screen3RecordHeader" style="display:none;">
         <div class="rec-sub">SCREENING RECORD</div>
         <div class="rec-id" id="screen3RecordId">TC-2026-0045 &middot; REF-9124</div>
       </div>
 
-      <div class="patient-strip" id="patientStrip"></div>
-      <div class="cbc-strip" id="cbcStrip"></div>
+      <div class="summary-section">
+        <div class="summary-card">
+          <div class="summary-card-label">PATIENT RECORD</div>
+          <div class="patient-strip" id="patientStrip"></div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-label">HEMATOLOGY PARAMETERS (CBC)</div>
+          <div class="cbc-strip" id="cbcStrip"></div>
+        </div>
+      </div>
 
       <!-- FINAL VERDICT BANNER -->
       <div id="verdictBox" class="verdict mixed">
-        <span class="tag" id="verdictTag">SCREENING RESULT</span>
+        <span class="tag" id="verdictTag">FINAL SCREENING RESULT</span>
         <h2 id="verdictTitle">—</h2>
         <p id="verdictBody">—</p>
         <div id="verdictRecommendation" class="recommendation-box" style="display:none;"></div>
@@ -1369,7 +1660,7 @@
       <div class="score-card">
         <div class="score-card-title">
           <span>Weighted Screening Summary</span>
-          <span id="totalWeightBadge" style="font-weight:600; color:var(--muted); font-size:11px;">Total Weight: 19</span>
+          <span id="totalWeightBadge" class="wt-total-badge">Total Weight: 19</span>
         </div>
         <div class="score-metrics">
           <div class="score-stat thal-stat">
@@ -1393,30 +1684,43 @@
       </div>
 
       <!-- 11 INDICES DETAILED TABLE -->
-      <h3 class="table-title">Discriminant Index Results (11 Indices)</h3>
-      <div class="table-container">
-        <table class="idx-table">
-          <thead>
-            <tr>
-              <th>Index</th>
-              <th>Calculated Value</th>
-              <th>Cut-off</th>
-              <th>Interpretation / Vote</th>
-              <th style="text-align:center;">Weight</th>
-            </tr>
-          </thead>
-          <tbody id="idxTableBody"></tbody>
-        </table>
+      <div class="section-block">
+        <h3 class="table-title">Discriminant Index Results (11 Indices)</h3>
+        <div class="table-container">
+          <table class="idx-table">
+            <thead>
+              <tr>
+                <th>Index</th>
+                <th>Calculated Value</th>
+                <th>Cut-off</th>
+                <th>Interpretation / Vote</th>
+                <th style="text-align:center;">Weight</th>
+              </tr>
+            </thead>
+            <tbody id="idxTableBody"></tbody>
+          </table>
+        </div>
       </div>
 
       <!-- MEDICAL DISCLAIMER -->
       <div class="disclaimer">
-        <b>Medical Disclaimer:</b> This application is intended for educational and research screening purposes only. It is not a substitute for clinical diagnosis. Results should be interpreted by a qualified healthcare professional, and confirmatory testing such as HPLC may be required.
+        <div class="disclaimer-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <div class="disclaimer-text">
+          <b>Medical Disclaimer:</b> This application is intended for educational and research screening purposes only. It is not a substitute for clinical diagnosis. Results should be interpreted by a qualified healthcare professional, and confirmatory testing such as HPLC may be required.
+        </div>
       </div>
 
       <div class="result-actions">
-        <button class="btn-secondary" onclick="window.print()">Print / save report</button>
-        <button class="btn-primary" onclick="resetApp()">New screening</button>
+        <button type="button" class="btn-secondary" onclick="window.print()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:6px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Print / Save Report (PDF)
+        </button>
+        <button type="button" class="btn-primary" onclick="resetApp()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          New Screening
+        </button>
       </div>
     </section>
 
@@ -1424,10 +1728,10 @@
     <section class="screen" id="screenLogin">
       <div class="login-card">
         <div class="login-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           Authorized Access
         </div>
-        <h1 class="screen-title" style="margin-top:10px;">Researcher & Admin Login</h1>
+        <h1 class="screen-title" style="margin-top:10px;">Researcher &amp; Admin Login</h1>
         <p class="screen-sub">Access the clinical screening database, aggregate metrics, and individual patient records.</p>
 
         <div id="loginAlert" class="login-alert" style="display:none;"></div>
@@ -1450,7 +1754,7 @@
 
           <div class="demo-cred-box">
             <div class="demo-cred-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
               Demo Authorized Credentials
             </div>
             <div class="demo-cred-row">
@@ -1475,11 +1779,12 @@
     <section class="screen" id="screenDashboard">
       <div class="dash-head">
         <div>
+          <div class="screen-badge">CLINICAL DATABASE</div>
           <h1 class="screen-title">Research Screening Dashboard</h1>
-          <p class="screen-sub" style="margin-bottom:0;">Real-time clinical screening consensus metrics & decision-support cohort records.</p>
+          <p class="screen-sub" style="margin-bottom:0;">Real-time clinical screening consensus metrics &amp; decision-support cohort records.</p>
         </div>
         <div class="dash-quick-actions">
-          <button class="btn-secondary btn-sm" onclick="navToScreening()">+ New Screening</button>
+          <button type="button" class="btn-secondary btn-sm" onclick="navToScreening()">+ New Screening</button>
           <div class="export-dropdown">
             <button type="button" class="btn-secondary btn-sm" onclick="toggleExportMenu('dashExportMenu', event)">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -1496,7 +1801,7 @@
               </button>
               <div class="export-menu-divider"></div>
               <button type="button" class="export-menu-item" onclick="exportMultiSheetExcel(); closeAllExportMenus();">
-                <div class="export-item-title" style="color:var(--teal);">&#x1F4D1; Download Excel (.xls)</div>
+                <div class="export-item-title" style="color:var(--primary);">&#x1F4D1; Download Excel (.xls)</div>
                 <div class="export-item-desc">Complete multi-sheet workbook: Sheet 1 (Patient Summary) &amp; Sheet 2 (Detailed Index Results).</div>
               </button>
             </div>
@@ -1509,7 +1814,7 @@
         <div class="stat-card total">
           <div class="stat-top">
             <span class="stat-label">Total Screenings</span>
-            <span style="font-size:16px;">📊</span>
+            <span style="font-size:15px;">📊</span>
           </div>
           <div class="stat-value" id="statTotalCount">0</div>
           <div class="stat-caption">Cohort records recorded</div>
@@ -1518,7 +1823,7 @@
         <div class="stat-card thal">
           <div class="stat-top">
             <span class="stat-label">Likely Thalassemia Trait</span>
-            <span class="stat-pill thal">Score ≥ 70%</span>
+            <span class="stat-pill thal">Score &ge; 70%</span>
           </div>
           <div class="stat-value" id="statThalCount">0</div>
           <div class="stat-caption" id="statThalPercent">0.0% of cohort</div>
@@ -1539,7 +1844,7 @@
             <span class="stat-pill mixed">40% – 69.99%</span>
           </div>
           <div class="stat-value" id="statIndeterminateCount">0</div>
-          <div class="stat-caption">HPLC recommended for confirmation</div>
+          <div class="stat-caption">HPLC recommended</div>
         </div>
       </div>
 
@@ -1548,9 +1853,9 @@
         <div class="section-card-head">
           <div>
             <h3 class="table-title" style="margin:0;">Recent Screenings</h3>
-            <span style="font-size:12px; color:var(--muted);">Latest registered screening records</span>
+            <span style="font-size:12px; color:var(--ink-muted);">Latest registered screening records</span>
           </div>
-          <button class="btn-ghost btn-sm" onclick="navToHistory()" style="font-size:12.5px; font-weight:600; color:var(--teal);">
+          <button type="button" class="btn-ghost btn-sm" onclick="navToHistory()" style="font-size:12.5px; font-weight:600; color:var(--primary);">
             View All History &rarr;
           </button>
         </div>
@@ -1576,6 +1881,7 @@
     <section class="screen" id="screenHistory">
       <div class="dash-head">
         <div>
+          <div class="screen-badge">COHORT ARCHIVE</div>
           <h1 class="screen-title">Screening Records History</h1>
           <p class="screen-sub" style="margin-bottom:0;">Archived 11-index screening records, discriminant scores, and exported reports.</p>
         </div>
@@ -1596,7 +1902,7 @@
               </button>
               <div class="export-menu-divider"></div>
               <button type="button" class="export-menu-item" onclick="exportMultiSheetExcel(); closeAllExportMenus();">
-                <div class="export-item-title" style="color:var(--teal);">&#x1F4D1; Download Excel (.xls)</div>
+                <div class="export-item-title" style="color:var(--primary);">&#x1F4D1; Download Excel (.xls)</div>
                 <div class="export-item-desc">Complete multi-sheet workbook: Sheet 1 (Patient Summary) &amp; Sheet 2 (Detailed Index Results).</div>
               </button>
             </div>
@@ -1642,8 +1948,8 @@
           <tbody id="historyTableBody"></tbody>
         </table>
         <div id="historyEmptyState" class="empty-state" style="display:none;">
-          <p style="margin:0; font-weight:600; color:var(--navy-deep);">No screening records found</p>
-          <small style="color:var(--muted); margin-top:4px; display:block;">Try adjusting your search query or result filter</small>
+          <p style="margin:0; font-weight:600; color:var(--ink);">No screening records found</p>
+          <small style="color:var(--ink-muted); margin-top:4px; display:block;">Try adjusting your search query or result filter</small>
         </div>
       </div>
     </section>
@@ -1658,12 +1964,12 @@
           <div class="rec-sub">SCREENING RECORD</div>
           <div class="rec-id" id="modalRecordId">TC-2026-0042 &middot; REF-8495</div>
         </div>
-        <button class="btn-close-modal" onclick="closeRecordModal()" aria-label="Close modal">&times;</button>
+        <button type="button" class="btn-close-modal" onclick="closeRecordModal()" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body" id="modalRecordContent"></div>
       <div class="modal-footer">
-        <button class="btn-ghost" onclick="closeRecordModal()">Close</button>
-        <button class="btn-primary" id="btnModalDownloadReport" onclick="handleModalDownloadReport()">
+        <button type="button" class="btn-ghost" onclick="closeRecordModal()">Close</button>
+        <button type="button" class="btn-primary" id="btnModalDownloadReport" onclick="handleModalDownloadReport()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
           Download Report (PDF)
         </button>
@@ -1671,8 +1977,42 @@
     </div>
   </div>
 
-  <footer class="credit">ThalCheck &middot; Medical Research Decision-Support Prototype &middot; Client-Side Screening Only</footer>
+  <footer class="credit">ThalCheck &middot; Medical Screening Platform &middot; Prototype Decision Support</footer>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <div id="bnavPublic" class="bnav-group">
+      <button type="button" class="bnav-item active" id="bnavScreening" onclick="navToScreening(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        <span>Screening</span>
+      </button>
+      <button type="button" class="bnav-item" id="bnavPortal" onclick="openLoginScreen()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span>Researcher</span>
+      </button>
+    </div>
+    <div id="bnavPrivate" class="bnav-group" style="display:none;">
+      <button type="button" class="bnav-item active" id="bnavAuthScreening" onclick="navToScreening(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        <span>Screening</span>
+      </button>
+      <button type="button" class="bnav-item" id="bnavDashboard" onclick="navToDashboard()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Dashboard</span>
+      </button>
+      <button type="button" class="bnav-item" id="bnavHistory" onclick="navToHistory()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>History</span>
+      </button>
+      <button type="button" class="bnav-item" id="bnavLogout" onclick="handleLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <span>Logout</span>
+      </button>
+    </div>
+  </nav>
+
 </div>
+
 
 <script>
   // ========================================================
@@ -1696,18 +2036,10 @@
   const screens = ['screen1', 'screen2', 'screen3', 'screenLogin', 'screenDashboard', 'screenHistory'];
   let patient = {};
 
-  // Stepper UI control
+  // Stepper UI control - kept for internal compatibility; stepper element is hidden as per mobile app redesign
   function setStep(n){
     const stepper = document.getElementById('stepperContainer');
-    if(!n){
-      if(stepper) stepper.style.display = 'none';
-      return;
-    }
-    if(stepper) stepper.style.display = 'flex';
-    const fillEl = document.getElementById('stepFill');
-    const labelEl = document.getElementById('stepLabel');
-    if(fillEl) fillEl.style.width = (n * 33.33) + '%';
-    if(labelEl) labelEl.textContent = 'Step ' + n + ' of 3';
+    if(stepper) stepper.style.display = 'none';
   }
 
   function showScreen(id, stepNum){
@@ -2595,15 +2927,21 @@
     const publicNav = document.getElementById('authPublicNav');
     const privateNav = document.getElementById('authPrivateNav');
     const userLabel = document.getElementById('userNameLabel');
+    const bnavPublic = document.getElementById('bnavPublic');
+    const bnavPrivate = document.getElementById('bnavPrivate');
 
     if (isAuth) {
       const user = ResearchAuth.getCurrentUser();
       if (publicNav) publicNav.style.display = 'none';
       if (privateNav) privateNav.style.display = 'flex';
       if (userLabel) userLabel.textContent = user ? user.name : 'Authorized Researcher';
+      if (bnavPublic) bnavPublic.style.display = 'none';
+      if (bnavPrivate) bnavPrivate.style.display = 'flex';
     } else {
       if (publicNav) publicNav.style.display = 'flex';
       if (privateNav) privateNav.style.display = 'none';
+      if (bnavPublic) bnavPublic.style.display = 'flex';
+      if (bnavPrivate) bnavPrivate.style.display = 'none';
     }
   }
 
@@ -2611,7 +2949,12 @@
     const tabMap = {
       'tabScreening': ['screen1', 'screen2', 'screen3'],
       'tabDashboard': ['screenDashboard'],
-      'tabHistory': ['screenHistory']
+      'tabHistory': ['screenHistory'],
+      'bnavScreening': ['screen1', 'screen2', 'screen3'],
+      'bnavAuthScreening': ['screen1', 'screen2', 'screen3'],
+      'bnavPortal': ['screenLogin'],
+      'bnavDashboard': ['screenDashboard'],
+      'bnavHistory': ['screenHistory']
     };
     for (const [tabId, screenList] of Object.entries(tabMap)) {
       const el = document.getElementById(tabId);
