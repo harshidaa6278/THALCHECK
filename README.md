@@ -28,7 +28,7 @@ A single-file web application upgraded for medical research decision-support:
 | 6 | **Srivastava** | `MCH / RBC` | `< 3.8` $\rightarrow$ THAL, $\ge 3.8$ $\rightarrow$ IDA | **1** |
 | 7 | **Ehsani** | `MCV − (10 × RBC)` | `< 15.0` $\rightarrow$ THAL, $\ge 15.0$ $\rightarrow$ IDA | **1** |
 | 8 | **Sirdah** | `MCV − RBC − (3 × Hb)` | `< 27.0` $\rightarrow$ THAL, $\ge 27.0$ $\rightarrow$ IDA | **1** |
-| 9 | **Bordbar** | `MCV − MCH` | `< 4.76` $\rightarrow$ THAL, $\ge 4.76$ $\rightarrow$ IDA | **2** |
+| 9 | **Bordbar** | `\|80 − MCV\| × \|27 − MCH\|` | `< 44.76` $\rightarrow$ THAL, $\ge 44.76$ $\rightarrow$ IDA | **2** |
 | 10 | **RDW Index** | `(RDW × MCV) / RBC` | `< 220.0` $\rightarrow$ THAL, $\ge 220.0$ $\rightarrow$ IDA | **2** |
 | 11 | **Logit Model** | Logistic Regression (see below) | `Probability > 0.5` $\rightarrow$ THAL, $\le 0.5$ $\rightarrow$ IDA | **1** |
 
