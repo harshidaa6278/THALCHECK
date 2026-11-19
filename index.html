@@ -2713,23 +2713,17 @@
       };
     }
 
-    // 9. Bordbar: MCV - MCH
-    // IDA: >= 4.76 | THAL: < 4.76
     // 9. Bordbar: |80 - MCV| × |27 - MCH|
     // IDA: >= 44.76 | THAL: < 44.76
     function calculateBordbar(cbc) {
-      const value = cbc.mcv - cbc.mch;
-      const vote = value < 4.76 ? 'THALASSAEMIA' : 'IDA';
       const value = Math.abs(80 - cbc.mcv) * Math.abs(27 - cbc.mch);
       const vote = value < 44.76 ? 'THALASSAEMIA' : 'IDA';
       return {
         id: 'bordbar',
         name: 'Bordbar',
-        formula: 'MCV − MCH',
         formula: '|80 − MCV| × |27 − MCH|',
         value: value,
         displayValue: value.toFixed(2),
-        cutoff: '< 4.76 THAL (≥ 4.76 IDA)',
         cutoff: '< 44.76 THAL (≥ 44.76 IDA)',
         vote: vote,
         weight: INDEX_WEIGHTS.bordbar
